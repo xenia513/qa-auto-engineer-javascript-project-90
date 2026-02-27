@@ -25,4 +25,10 @@ export default class LoginMVCPage {
  async clickSignInButton() {
     await this.signInButton.click()
   }
+
+  async successAuth() {
+    await this.fillUsername('username')
+    await this.fillPassword('password')
+    await this.clickSignInButton()
+  }
 }
