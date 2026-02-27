@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test'
 import LoginMVCPage from '../utils/LoginMVCPage.js'
 
-let login
-
 test.beforeEach(async ({ page, context }) => {
   await context.clearCookies()
-  login = new LoginMVCPage(page)
+  let login = new LoginMVCPage(page)
   await login.goto()
   await login.successAuth()
 })
