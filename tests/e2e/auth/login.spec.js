@@ -26,6 +26,7 @@ test.describe('Authorization tests', () => {
       await login.clickSignInButton()
       await expect(login.usernameInput).toHaveAttribute('aria-invalid', 'true')
       await expect(page.getByText('Required')).toBeVisible()
+      await expect(login.alert).toBeVisible()
     })
 
     test('Empty password', async ({ page }) => {
@@ -33,6 +34,7 @@ test.describe('Authorization tests', () => {
       await login.clickSignInButton()
       await expect(login.passwordInput).toHaveAttribute('aria-invalid', 'true')
       await expect(page.getByText('Required')).toBeVisible()
+      await expect(login.alert).toBeVisible()
     })
   })
 })

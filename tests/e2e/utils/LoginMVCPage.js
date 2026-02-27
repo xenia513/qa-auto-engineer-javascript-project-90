@@ -7,6 +7,7 @@ export default class LoginMVCPage {
     this.usernameInput = page.getByLabel('Username')
     this.passwordInput = page.getByLabel('Password')
     this.signInButton = page.getByRole('button', { name: 'Sign in' })
+    this.alert = page.getByText('The form is not valid. Please check for errors')
   }
 
   async goto() {
