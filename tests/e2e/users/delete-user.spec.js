@@ -17,7 +17,7 @@ test.describe('Delete tests', () => {
     })
 
   test.describe('Delete single user', () => {
-    let userId
+    let id
     let email
     
     test.beforeEach(async () => {
@@ -26,18 +26,18 @@ test.describe('Delete tests', () => {
       const lastname = faker.person.lastName()
       await user.successCreate(email, firstname, lastname)
       await users.goto()
-      userId = await users.getUsersIdByEmail(email)
+      id = await users.getUsersIdByEmail(email)
     })
 
     test('Delete user from user page', async ({ page }) => {
-      await user.gotoUser(userId)
+      await user.gotoUser(id)
       await user.deleteButton.click()
       await expect(page).toHaveURL('/#/users')
       await expect(users.singleDeletePopup).toBeVisible()
       await expect(users.singleDeletePopup).toBeHidden()
       await expect(page).toHaveURL('/#/users')
       await expect(users.getUserByEmail(email)).not.toBeVisible()
-      await user.gotoUser(userId)
+      await user.gotoUser(id)
       await expect(users.alert).toBeVisible()
     })
 
@@ -48,7 +48,7 @@ test.describe('Delete tests', () => {
       await expect(users.singleDeletePopup).toBeHidden()
       await expect(page).toHaveURL('/#/users')
       await expect(users.getUserByEmail(email)).not.toBeVisible()
-      await user.gotoUser(userId)
+      await user.gotoUser(id)
       await expect(users.alert).toBeVisible()
     })
 })
