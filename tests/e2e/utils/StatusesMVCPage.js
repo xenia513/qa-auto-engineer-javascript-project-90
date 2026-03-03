@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 
-export default class UsersMVCPage {
+export default class StatusesMVCPage {
   /**
    * @param {Page} page
    */
@@ -16,36 +16,35 @@ export default class UsersMVCPage {
     this.pageSizeSelector = page.locator('.MuiTablePagination-select')
     this.paginationInfo = page.locator('.MuiTablePagination-displayedRows')
     this.alert = page.getByText('Element does not exist')
-    this.emptyState = page.getByText('No Users yet')
+    this.emptyState = page.getByText('No Task statuses yet')
   }
 
   async goto() {
-    await this.page.goto('/#/users')
+    await this.page.goto('/#/task_statuses')
   }
 
-  async expectUserCount(count) {
+  async expectStatusCount(count) {
     await expect(this.tableRows).toHaveCount(count)
   }
 
-  getUserByEmail(email) {
-    return this.tableRows.filter({ hasText: email })
+  getStatusByName(name) {
+    return this.tableRows.filter({ hasText: name })
   }
 
-  async checkUserByEmail(email, firstname, lastname) {
-    const row = this.getUserByEmail(email)
+  async checkStatusByName(name, slug) {
+    const row = this.getStatusByName(name)
     await expect(row).toBeVisible()
-    await expect(row).toContainText(firstname)
-    await expect(row).toContainText(lastname)
+    await expect(row).toContainText(slug)
   }
 
-  async selectUserByEmail(email) {
-    const row = this.getUserByEmail(email)
+  async selectStatusByName(name) {
+    const row = this.getStatusByName(name)
     const checkbox = row.getByRole('checkbox')
     await checkbox.click()
     await expect(checkbox).toBeChecked()
   }
 
-  async selectAllUsers() {
+  async selectAllStatuses() {
     const selectAllCheckbox = this.page.getByRole('checkbox').first()
     await selectAllCheckbox.click()
     await expect(selectAllCheckbox).toBeChecked()
@@ -56,8 +55,8 @@ export default class UsersMVCPage {
     }
   }
 
-  async getUsersIdByEmail(email) {
-    const row = this.getUserByEmail(email)
+  async getStatusIdByName(name) {
+    const row = this.getStatusByName(name)
     const idCell = row.locator('td').nth(1)
     return await idCell.innerText()
   }
