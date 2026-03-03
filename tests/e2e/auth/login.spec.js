@@ -6,35 +6,35 @@ test.describe('Authorization tests', () => {
   const username = 'username'
   const password = 'password'
 
-  test.beforeEach(async ({ page, context }) => {
-    await context.clearCookies()
+  test.beforeEach(async ({ page }) => {
     login = new LoginMVCPage(page)
     await login.goto()
   })
 
-  test('Authorization succeed', async ({ page }) => {
+  test('Form elements should be visible', async () => {
+    await login.checkUIElements()
+})
 
-    await login.fillUsername(username)
-    await login.fillPassword(password)
-    await login.clickSignInButton()
-    await expect(page).not.toHaveURL(/.*login/)
+  test('Authorization succeed', async ({ page }) => {
+    await login.successAuth(username, password)
+    await expect(page.locator('h6')).toHaveText('Welcome to the administration')
     })
 
   test.describe('Authorization failed', () => {
-    test('Empty username', async ({ page }) => {
-      await login.fillPassword(password)
-      await login.clickSignInButton()
-      await expect(login.usernameInput).toHaveAttribute('aria-invalid', 'true')
-      await expect(page.getByText('Required')).toBeVisible()
-      await expect(login.alert).toBeVisible()
-    })
+    const errorMessage = 'Required'
+    const fields = [
+      { name: 'Username', key: 'usernameInput' },
+      { name: 'Password', key: 'passwordInput' }
+    ]
 
-    test('Empty password', async ({ page }) => {
-      await login.fillUsername(username)
-      await login.clickSignInButton()
-      await expect(login.passwordInput).toHaveAttribute('aria-invalid', 'true')
-      await expect(page.getByText('Required')).toBeVisible()
-      await expect(login.alert).toBeVisible()
-    })
+    for (const field of fields) {
+      test(`Empty ${field.name}`, async () => {
+        const inputLocator = login[field.key]
+        await inputLocator.fill('')
+        await login.clickSignInButton()
+        await login.checkFieldError(inputLocator, errorMessage)
+        await expect(login.alert).toBeVisible()
+      })
+    }
   })
 })
