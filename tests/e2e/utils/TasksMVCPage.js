@@ -93,4 +93,24 @@ export default class TasksMVCPage {
     await this.gotoTaskById(id)
     await expect(this.alert).toBeVisible()
   }
+
+  async dragTaskToStatus(title, status) {
+    const task =  this.getTaskByTitle(title)
+    const targetColumn = this.page.locator('div').filter({ has: this.page.locator(`h6:has-text("${status}")`) }).last()
+    const taskBox = await task.boundingBox()
+    const columnBox = await targetColumn.boundingBox()
+    if (!taskBox || !columnBox) {
+      throw new Error(`Не удалось найти координаты для задачи "${title}" или колонки "${status}"`)
+    }
+
+    await this.page.mouse.move(taskBox.x + taskBox.width / 2, taskBox.y + taskBox.height / 2)
+    await this.page.mouse.down()
+    await this.page.mouse.move(
+      columnBox.x + columnBox.width / 2, 
+      columnBox.y + columnBox.height / 2, 
+      { steps: 10 }
+    )
+    await this.page.mouse.up()
+    await this.page.waitForLoadState('networkidle')
+  }
 }

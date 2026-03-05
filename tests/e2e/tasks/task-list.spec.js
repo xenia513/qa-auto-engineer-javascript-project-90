@@ -60,4 +60,11 @@ test.describe('Tasks list tests', () => {
     await tasksPage.filterByStatus('Published')
     await expect(tasksPage.taskCards).toHaveCount(0)
   })
+
+  test('Drag-and-Drop test', async ({ tasksPage }) => {
+    const newStatus = 'To Review'
+    await tasksPage.dragTaskToStatus(title, newStatus)
+    const targetColumn = tasksPage.getColumnByStatus(newStatus)
+    await expect(targetColumn.locator(createdTask)).toBeVisible()
+  })
 })
