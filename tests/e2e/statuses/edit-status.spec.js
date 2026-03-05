@@ -1,46 +1,36 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import StatusMVCPage from '../utils/StatusMVCPage.js'
-import StatusesMVCPage from '../utils/StatusesMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Status edit tests', () => {
-  let status
-  let statuses
 
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    status = new StatusMVCPage(page)
-    statuses = new StatusesMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
+  test.beforeEach(async ({ statusPage, statusesPage }) => {
     const name = faker.book.title()
     const slug = faker.book.author()
-    await status.successCreate(name, slug)
-    await statuses.goto()
-    const id = await statuses.getStatusIdByName(name)
-    await status.gotoStatus(id)
+    await statusPage.successCreate(name, slug)
+    await statusesPage.goto()
+    const id = await statusesPage.getStatusIdByName(name)
+    await statusesPage.gotoStatus(id)
     })
   
-  test('Form elements should be visible', async () => {
-    await status.checkUIElements()
-    await expect(status.submitButton).toBeDisabled()
+  test('Form elements should be visible', async ({ statusPage }) => {
+    await statusPage.checkUIElements()
+    await expect(statusPage.submitButton).toBeDisabled()
   })
 
-  test('Update succeed', async ({ page }) => {
+  test('Update succeed', async ({ page, statusPage, statusesPage }) => {
     const name = faker.book.title()
     const slug = faker.book.author()
-    await status.successEdit(name, slug)
+    await statusPage.successEdit(name, slug)
     await expect(page).toHaveURL('/#/task_statuses')
-    await expect(statuses.updatePopup).toBeVisible()
-    await statuses.goto()
-    await statuses.checkStatusByName(name, slug)
+    await expect(statusesPage.updatePopup).toBeVisible()
+    await statusesPage.goto()
+    await statusesPage.checkStatusByName(name, slug)
     })
 
   test.describe('Update failed', () => {
 
-    test('Empty fields', async () => {
-      await status.checkEmptyFields()
+    test('Empty fields', async ({ statusPage }) => {
+      await statusPage.checkEmptyFields()
     })
   })
 })

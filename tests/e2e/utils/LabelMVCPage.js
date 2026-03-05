@@ -16,10 +16,6 @@ export default class LabelMVCPage {
   async gotoCreate() {
     await this.page.goto('/#/labels/create')
   }
-
-  async gotoLabel(id) {
-    await this.page.goto(`/#/labels/${id}`)
-  }
   
   async checkUIElements() {
     const elements = [

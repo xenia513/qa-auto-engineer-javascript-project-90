@@ -1,41 +1,28 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import StatusMVCPage from '../utils/StatusMVCPage.js'
-import StatusesMVCPage from '../utils/StatusesMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Status create tests', () => {
-  let status
-  let statuses
 
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    status = new StatusMVCPage(page)
-    statuses = new StatusesMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    })
-
-  test('Form elements should be visible', async () => {
-    await status.gotoCreate()
-    await status.checkUIElements()
-    await expect(status.submitButton).toBeDisabled()
+  test('Form elements should be visible', async ({ statusPage }) => {
+    await statusPage.gotoCreate()
+    await statusPage.checkUIElements()
+    await expect(statusPage.submitButton).toBeDisabled()
   })
 
-  test('Creation succeed', async () => {
+  test('Creation succeed', async ({ statusPage, statusesPage }) => {
     const name = faker.book.title()
     const slug = faker.book.author()
-    await status.successCreate(name, slug)
-    await expect(status.createPopup).toBeVisible()
-    await statuses.goto()
-    await statuses.checkStatusByName(name, slug)
+    await statusPage.successCreate(name, slug)
+    await expect(statusPage.createPopup).toBeVisible()
+    await statusesPage.goto()
+    await statusesPage.checkStatusByName(name, slug)
     })
 
   test.describe('Creation failed', () => {
 
-    test('Empty fields', async () => {
-      await status.gotoCreate()
-      await status.checkEmptyFields()
+    test('Empty fields', async ({ statusPage }) => {
+      await statusPage.gotoCreate()
+      await statusPage.checkEmptyFields()
     })
   })
 })

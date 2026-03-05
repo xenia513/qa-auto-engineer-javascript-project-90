@@ -1,40 +1,27 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import LabelMVCPage from '../utils/LabelMVCPage.js'
-import LabelsMVCPage from '../utils/LabelsMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Label create tests', () => {
-  let label
-  let labels
 
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    label = new LabelMVCPage(page)
-    labels = new LabelsMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    })
-
-  test('Form elements should be visible', async () => {
-    await label.gotoCreate()
-    await label.checkUIElements()
-    await expect(label.submitButton).toBeDisabled()
+  test('Form elements should be visible', async ({ labelPage }) => {
+    await labelPage.gotoCreate()
+    await labelPage.checkUIElements()
+    await expect(labelPage.submitButton).toBeDisabled()
   })
 
-  test('Creation succeed', async () => {
+  test('Creation succeed', async ({ labelPage, labelsPage }) => {
     const name = faker.color.human()
-    await label.successCreate(name)
-    await expect(label.createPopup).toBeVisible()
-    await labels.goto()
-    await labels.checkLabelByName(name)
+    await labelPage.successCreate(name)
+    await expect(labelPage.createPopup).toBeVisible()
+    await labelsPage.goto()
+    await labelsPage.checkLabelByName(name)
     })
 
   test.describe('Creation failed', () => {
 
-    test('Empty fields', async () => {
-      await label.gotoCreate()
-      await label.checkEmptyFields()
+    test('Empty fields', async ({ labelPage }) => {
+      await labelPage.gotoCreate()
+      await labelPage.checkEmptyFields()
     })
   })
 })

@@ -23,6 +23,10 @@ export default class UsersMVCPage {
     await this.page.goto('/#/users')
   }
 
+  async gotoUser(id) {
+    await this.page.goto(`/#/users/${id}`)
+  }
+
   async expectUserCount(count) {
     await expect(this.tableRows).toHaveCount(count)
   }
@@ -66,5 +70,14 @@ export default class UsersMVCPage {
     await this.pageSizeSelector.click()
     await this.page.getByRole('option', { name: size.toString(), exact: true }).click()
     await this.page.waitForLoadState('networkidle')
+  }
+
+  async checkDeleteUser(email, id) {
+      await expect(this.singleDeletePopup).toBeVisible()
+      await expect(this.singleDeletePopup).toBeHidden()
+      await expect(this.page).toHaveURL('/#/users')
+      await expect(this.getUserByEmail(email)).not.toBeVisible()
+      await this.gotoUser(id)
+      await expect(this.alert).toBeVisible()
   }
 }

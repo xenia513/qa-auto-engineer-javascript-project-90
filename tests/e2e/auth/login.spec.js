@@ -1,22 +1,19 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Authorization tests', () => {
-  let login
   const username = 'username'
   const password = 'password'
 
-  test.beforeEach(async ({ page }) => {
-    login = new LoginMVCPage(page)
-    await login.goto()
+  test.beforeEach(async ({ loginPage }) => {
+    await loginPage.goto()
   })
 
-  test('Form elements should be visible', async () => {
-    await login.checkUIElements()
+  test('Form elements should be visible', async ({ loginPage }) => {
+    await loginPage.checkUIElements()
 })
 
-  test('Authorization succeed', async ({ page }) => {
-    await login.successAuth(username, password)
+  test('Authorization succeed', async ({ page,loginPage }) => {
+    await loginPage.successAuth(username, password)
     await expect(page.locator('h6')).toHaveText('Welcome to the administration')
     })
 
@@ -28,12 +25,12 @@ test.describe('Authorization tests', () => {
     ]
 
     for (const field of fields) {
-      test(`Empty ${field.name}`, async () => {
-        const inputLocator = login[field.key]
+      test(`Empty ${field.name}`, async ({ loginPage }) => {
+        const inputLocator = loginPage[field.key]
         await inputLocator.fill('')
-        await login.clickSignInButton()
-        await login.checkFieldError(inputLocator, errorMessage)
-        await expect(login.alert).toBeVisible()
+        await loginPage.clickSignInButton()
+        await loginPage.checkFieldError(inputLocator, errorMessage)
+        await expect(loginPage.alert).toBeVisible()
       })
     }
   })

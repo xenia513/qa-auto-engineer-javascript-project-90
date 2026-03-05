@@ -23,6 +23,10 @@ export default class LabelsMVCPage {
     await this.page.goto('/#/labels')
   }
 
+  async gotoLabel(id) {
+    await this.page.goto(`/#/labels/${id}`)
+  }
+
   async expectLabelCount(count) {
     await expect(this.tableRows).toHaveCount(count)
   }
@@ -64,5 +68,14 @@ export default class LabelsMVCPage {
     await this.pageSizeSelector.click()
     await this.page.getByRole('option', { name: size.toString(), exact: true }).click()
     await this.page.waitForLoadState('networkidle')
+  }
+
+  async checkDeleteLabel(name, id) {
+      await expect(this.singleDeletePopup).toBeVisible()
+      await expect(this.singleDeletePopup).toBeHidden()
+      await expect(this.page).toHaveURL('/#/labels')
+      await expect(this.getLabelByName(name)).not.toBeVisible()
+      await this.gotoLabel(id)
+      await expect(this.alert).toBeVisible()
   }
 }

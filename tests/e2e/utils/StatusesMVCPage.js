@@ -23,6 +23,10 @@ export default class StatusesMVCPage {
     await this.page.goto('/#/task_statuses')
   }
 
+  async gotoStatus(id) {
+    await this.page.goto(`/#/task_statuses/${id}`)
+  }
+
   async expectStatusCount(count) {
     await expect(this.tableRows).toHaveCount(count)
   }
@@ -65,5 +69,14 @@ export default class StatusesMVCPage {
     await this.pageSizeSelector.click()
     await this.page.getByRole('option', { name: size.toString(), exact: true }).click()
     await this.page.waitForLoadState('networkidle')
+  }
+
+  async checkDeleteStatus(name, id) {
+      await expect(this.singleDeletePopup).toBeVisible()
+      await expect(this.singleDeletePopup).toBeHidden()
+      await expect(this.page).toHaveURL('/#/task_statuses')
+      await expect(this.getStatusByName(name)).not.toBeVisible()
+      await this.gotoStatus(id)
+      await expect(this.alert).toBeVisible()
   }
 }

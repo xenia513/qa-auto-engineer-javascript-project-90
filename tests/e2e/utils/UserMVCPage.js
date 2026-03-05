@@ -18,10 +18,6 @@ export default class UserMVCPage {
   async gotoCreate() {
     await this.page.goto('/#/users/create')
   }
-
-  async gotoUser(id) {
-    await this.page.goto(`/#/users/${id}`)
-  }
   
   async checkUIElements() {
     const elements = [

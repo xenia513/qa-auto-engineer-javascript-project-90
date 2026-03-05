@@ -1,49 +1,33 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import StatusMVCPage from '../utils/StatusMVCPage.js'
-import StatusesMVCPage from '../utils/StatusesMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Statuses list tests', () => {
-  let status
-  let statuses
 
-
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    status = new StatusMVCPage(page)
-    statuses = new StatusesMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    await statuses.goto()
-    })
-
-  test('Table should be visible', async () => {
-    await expect(statuses.tableBody).toBeVisible()
+  test('Table should be visible', async ({ statusesPage }) => {
+    await statusesPage.goto()
+    await expect(statusesPage.tableBody).toBeVisible()
   })
 
   test.describe('Table data', () => {
-    let id
-    let name
-    let slug
+    let id, name, slug
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ statusPage, statusesPage }) => {
       name = faker.book.title()
       slug = faker.book.author()
-      await status.successCreate(name, slug)
-      await statuses.goto()
-      id = await statuses.getStatusIdByName(name)
+      await statusPage.successCreate(name, slug)
+      await statusesPage.goto()
+      id = await statusesPage.getStatusIdByName(name)
     })
 
-    test('Status data', async () => {
-      await statuses.checkStatusByName(name, slug)
+    test('Status data', async ({ statusesPage }) => {
+      await statusesPage.checkStatusByName(name, slug)
     })
 
-    test('Pagination', async () => {
+    test('Pagination', async ({ statusesPage }) => {
       const size = 5
-      await statuses.setPageSize(size)
-      await expect(statuses.tableRows).toHaveCount(size)
-      await expect(statuses.paginationInfo).toHaveText(`1-${size} of ${id}`)
+      await statusesPage.setPageSize(size)
+      await expect(statusesPage.tableRows).toHaveCount(size)
+      await expect(statusesPage.paginationInfo).toHaveText(`1-${size} of ${id}`)
     })
   })
 })

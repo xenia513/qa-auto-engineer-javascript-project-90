@@ -1,47 +1,32 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import LabelMVCPage from '../utils/LabelMVCPage.js'
-import LabelsMVCPage from '../utils/LabelsMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Labels list tests', () => {
-  let label
-  let labels
 
-
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    label = new LabelMVCPage(page)
-    labels = new LabelsMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    await labels.goto()
-    })
-
-  test('Table should be visible', async () => {
-    await expect(labels.tableBody).toBeVisible()
+  test('Table should be visible', async ({ labelsPage }) => {
+    await labelsPage.goto()
+    await expect(labelsPage.tableBody).toBeVisible()
   })
 
   test.describe('Table data', () => {
-    let id
-    let name
+    let id, name
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ labelPage, labelsPage }) => {
       name = faker.book.title()
-      await label.successCreate(name)
-      await labels.goto()
-      id = await labels.getLabelIdByName(name)
+      await labelPage.successCreate(name)
+      await labelsPage.goto()
+      id = await labelsPage.getLabelIdByName(name)
     })
 
-    test('Label data', async () => {
-      await labels.checkLabelByName(name)
+    test('Label data', async ({ labelsPage }) => {
+      await labelsPage.checkLabelByName(name)
     })
 
-    test('Pagination', async () => {
+    test('Pagination', async ({ labelsPage }) => {
       const size = 5
-      await labels.setPageSize(size)
-      await expect(labels.tableRows).toHaveCount(size)
-      await expect(labels.paginationInfo).toHaveText(`1-${size} of ${id}`)
+      await labelsPage.setPageSize(size)
+      await expect(labelsPage.tableRows).toHaveCount(size)
+      await expect(labelsPage.paginationInfo).toHaveText(`1-${size} of ${id}`)
     })
   })
 })

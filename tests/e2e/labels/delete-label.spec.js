@@ -1,65 +1,34 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import LabelMVCPage from '../utils/LabelMVCPage.js'
-import LabelsMVCPage from '../utils/LabelsMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
-test.describe('Delete tests', () => {
-  let label
-  let labels
+test.describe('Label delete tests', () => {
+  let id, name
 
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    label = new LabelMVCPage(page)
-    labels = new LabelsMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    })
+  test.beforeEach(async ({ labelPage, labelsPage }) => {
+    name = faker.color.human()
+    await labelPage.successCreate(name)
+    await labelsPage.goto()
+    id = await labelsPage.getLabelIdByName(name)
+  })
 
-  test.describe('Delete single label', () => {
-    let id
-    let name
-    
-    test.beforeEach(async () => {
-      name = faker.color.human()
-      await label.successCreate(name)
-      await labels.goto()
-      id = await labels.getLabelIdByName(name)
-    })
+  test('Delete from label page', async ({ labelPage, labelsPage }) => {
+    await labelsPage.gotoLabel(id)
+    await labelPage.deleteButton.click()
+    await labelsPage.checkDeleteLabel(name, id)
+  })
 
-    test('Delete label from label page', async ({ page }) => {
-      await label.gotoLabel(id)
-      await label.deleteButton.click()
-      await expect(page).toHaveURL('/#/labels')
-      await expect(labels.singleDeletePopup).toBeVisible()
-      await expect(labels.singleDeletePopup).toBeHidden()
-      await expect(page).toHaveURL('/#/labels')
-      await expect(labels.getLabelByName(name)).not.toBeVisible()
-      await label.gotoLabel(id)
-      await expect(labels.alert).toBeVisible()
-    })
+  test('Delete from labels list', async ({ labelsPage }) => {
+    await labelsPage.selectLabelByName(name)
+    await labelsPage.deleteButton.click()
+    await labelsPage.checkDeleteLabel(name, id)
+  })
 
-    test('Delete label from labels list', async ({ page }) => {
-      await labels.selectLabelByName(name)
-      await labels.deleteButton.click()
-      await expect(labels.singleDeletePopup).toBeVisible()
-      await expect(labels.singleDeletePopup).toBeHidden()
-      await expect(page).toHaveURL('/#/labels')
-      await expect(labels.getLabelByName(name)).not.toBeVisible()
-      await label.gotoLabel(id)
-      await expect(labels.alert).toBeVisible()
-    })
-})
-
-  test.describe('Mass delete', () => {
-
-    test('Delete all labels from labels list', async () => {
-      await labels.goto()
-      await labels.selectAllLabels()
-      await labels.deleteButton.click()
-      await expect(labels.massDeletePopup).toBeVisible()
-      await expect(labels.tableBody).not.toBeVisible()
-      await expect(labels.emptyState).toBeVisible()
-    })
+  test('Delete all labels from labels list', async ({ labelsPage }) => {
+    await labelsPage.goto()
+    await labelsPage.selectAllLabels()
+    await labelsPage.deleteButton.click()
+    await expect(labelsPage.massDeletePopup).toBeVisible()
+    await expect(labelsPage.tableBody).not.toBeVisible()
+    await expect(labelsPage.emptyState).toBeVisible()
   })
 })

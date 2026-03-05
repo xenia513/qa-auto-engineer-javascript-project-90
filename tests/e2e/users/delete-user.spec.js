@@ -1,67 +1,36 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import UserMVCPage from '../utils/UserMVCPage.js'
-import UsersMVCPage from '../utils/UsersMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
-test.describe('Delete tests', () => {
-  let user
-  let users
-
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    user = new UserMVCPage(page)
-    users = new UsersMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
-    })
-
-  test.describe('Delete single user', () => {
-    let id
-    let email
+test.describe('User delete tests', () => {
+    let id, email
     
-    test.beforeEach(async () => {
-      email = faker.internet.email()
-      const firstname = faker.person.firstName()
-      const lastname = faker.person.lastName()
-      await user.successCreate(email, firstname, lastname)
-      await users.goto()
-      id = await users.getUsersIdByEmail(email)
-    })
+  test.beforeEach(async ({ userPage, usersPage }) => {
+    email = faker.internet.email()
+    const firstname = faker.person.firstName()
+    const lastname = faker.person.lastName()
+    await userPage.successCreate(email, firstname, lastname)
+    await usersPage.goto()
+    id = await usersPage.getUsersIdByEmail(email)
+  })
 
-    test('Delete user from user page', async ({ page }) => {
-      await user.gotoUser(id)
-      await user.deleteButton.click()
-      await expect(page).toHaveURL('/#/users')
-      await expect(users.singleDeletePopup).toBeVisible()
-      await expect(users.singleDeletePopup).toBeHidden()
-      await expect(page).toHaveURL('/#/users')
-      await expect(users.getUserByEmail(email)).not.toBeVisible()
-      await user.gotoUser(id)
-      await expect(users.alert).toBeVisible()
-    })
+  test('Delete from user page', async ({ userPage, usersPage }) => {
+    await usersPage.gotoUser(id)
+    await userPage.deleteButton.click()
+    await usersPage.checkDeleteUser(email, id)
+  })
 
-    test('Delete user from users list', async ({ page }) => {
-      await users.selectUserByEmail(email)
-      await users.deleteButton.click()
-      await expect(users.singleDeletePopup).toBeVisible()
-      await expect(users.singleDeletePopup).toBeHidden()
-      await expect(page).toHaveURL('/#/users')
-      await expect(users.getUserByEmail(email)).not.toBeVisible()
-      await user.gotoUser(id)
-      await expect(users.alert).toBeVisible()
-    })
-})
+  test('Delete from users list', async ({ usersPage }) => {
+    await usersPage.selectUserByEmail(email)
+    await usersPage.deleteButton.click()
+    await usersPage.checkDeleteUser(email, id)
+  })
 
-  test.describe('Mass delete', () => {
-
-    test('Delete all users from users list', async () => {
-      await users.goto()
-      await users.selectAllUsers()
-      await users.deleteButton.click()
-      await expect(users.massDeletePopup).toBeVisible()
-      await expect(users.tableBody).not.toBeVisible()
-      await expect(users.emptyState).toBeVisible()
-    })
+  test('Delete all users from users list', async ({ usersPage }) => {
+    await usersPage.goto()
+    await usersPage.selectAllUsers()
+    await usersPage.deleteButton.click()
+    await expect(usersPage.massDeletePopup).toBeVisible()
+    await expect(usersPage.tableBody).not.toBeVisible()
+    await expect(usersPage.emptyState).toBeVisible()
   })
 })

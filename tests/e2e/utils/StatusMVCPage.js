@@ -18,10 +18,6 @@ export default class StatusMVCPage {
     await this.page.goto('/#/task_statuses/create')
   }
 
-  async gotoStatus(id) {
-    await this.page.goto(`/#/task_statuses/${id}`)
-  }
-  
   async checkUIElements() {
     const elements = [
       this.nameInput,

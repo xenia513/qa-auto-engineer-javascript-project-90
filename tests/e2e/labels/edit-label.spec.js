@@ -1,44 +1,34 @@
-import { test, expect } from '@playwright/test'
-import LoginMVCPage from '../utils/LoginMVCPage.js'
-import LabelMVCPage from '../utils/LabelMVCPage.js'
-import LabelsMVCPage from '../utils/LabelsMVCPage.js'
+import { test, expect } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Label edit tests', () => {
-  let label
-  let labels
 
-  test.beforeEach(async ({ page }) => {
-    const login = new LoginMVCPage(page)
-    label = new LabelMVCPage(page)
-    labels = new LabelsMVCPage(page)
-    await login.goto()
-    await login.successAuth('username', 'password')
+  test.beforeEach(async ({ labelPage, labelsPage }) => {
     const name = faker.color.human()
-    await label.successCreate(name)
-    await labels.goto()
-    const id = await labels.getLabelIdByName(name)
-    await label.gotoLabel(id)
+    await labelPage.successCreate(name)
+    await labelsPage.goto()
+    const id = await labelsPage.getLabelIdByName(name)
+    await labelsPage.gotoLabel(id)
     })
   
-  test('Form elements should be visible', async () => {
-    await label.checkUIElements()
-    await expect(label.submitButton).toBeDisabled()
+  test('Form elements should be visible', async ({ labelPage }) => {
+    await labelPage.checkUIElements()
+    await expect(labelPage.submitButton).toBeDisabled()
   })
 
-  test('Update succeed', async ({ page }) => {
+  test('Update succeed', async ({ page, labelPage, labelsPage }) => {
     const name = faker.color.human()
-    await label.successEdit(name)
+    await labelPage.successEdit(name)
     await expect(page).toHaveURL('/#/labels')
-    await expect(labels.updatePopup).toBeVisible()
-    await labels.goto()
-    await labels.checkLabelByName(name)
+    await expect(labelsPage.updatePopup).toBeVisible()
+    await labelsPage.goto()
+    await labelsPage.checkLabelByName(name)
     })
 
   test.describe('Update failed', () => {
 
-    test('Empty fields', async () => {
-      await label.checkEmptyFields()
+    test('Empty fields', async ({ labelPage }) => {
+      await labelPage.checkEmptyFields()
     })
   })
 })
