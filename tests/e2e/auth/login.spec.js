@@ -1,5 +1,7 @@
 import { test, expect } from '../utils/fixtures.js'
 
+test.use({ storageState: { cookies: [], origins: [] } })
+
 test.describe('Authorization tests', () => {
   const username = 'username'
   const password = 'password'

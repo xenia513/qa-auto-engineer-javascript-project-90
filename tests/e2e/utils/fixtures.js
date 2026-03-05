@@ -16,9 +16,8 @@ export const test = base.extend({
     await use(new LoginMVCPage(page))
   },
 
-  loggedPage: async ({ loginPage, page }, use) => {
-    await loginPage.goto()
-    await loginPage.successAuth('username', 'password')
+  loggedPage: async ({ page }, use) => {
+    await page.goto('/')
     await use(page)
   },
 
