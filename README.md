@@ -1,6 +1,9 @@
+### Hexlet tests and linter status:
+[![Actions Status](https://github.com/xenia513/qa-auto-engineer-javascript-project-87/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/xenia513/qa-auto-engineer-javascript-project-90/actions)
+
 # 🎭 Playwright E2E Testing Framework
 
-This project is a automated testing framework built for a **React + Vite** web application.
+This project is an automated testing framework built for a **React + Vite** web application.
 
 ## 🏗 Framework Architecture
 
