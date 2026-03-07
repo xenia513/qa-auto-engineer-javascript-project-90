@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test'
-import path from 'path'
+import path from 'node:path'
 const authFile = path.join(process.cwd(), 'playwright/.auth/user.json')
 
 /**
@@ -79,6 +79,6 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: 180 * 1000,
   },
 });
