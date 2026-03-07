@@ -1,70 +1,71 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Tasks list tests', () => {
-  let title, content, createdTask
+  let title, createdTask, content
 
-  test.beforeEach(async ({ taskPage, tasksPage, testData }) => {
-    title = faker.book.title()
-    content = null
-    await taskPage.successCreate(testData.email, title, testData.status, content, testData.label)
-    createdTask = tasksPage.getTaskByTitle(title)
-    await tasksPage.goto()
-    })
-
-  test('Table should be visible', async ({ tasksPage }) => {
-    await expect(tasksPage.taskCards).not.toHaveCount(0)
+  test.beforeEach(async ({ taskPage, testData }) => {
+    await taskPage.goto()
+    title = testData.title
+    content = testData.title
+    createdTask = taskPage.getItem(title)
   })
 
-  test('Task data', async ({ tasksPage, testData }) => {
-    await expect(createdTask).toBeVisible()
-    await tasksPage.checkTaskByTitle(title, testData.status, content)
-    })
-
-  test('Filter by assignee', async ({ tasksPage, testData }) => {
-    await tasksPage.filterByAssignee(testData.email)
-    await expect(createdTask).toBeVisible()
-    await expect(tasksPage.taskCards).toHaveCount(1)
+  test('Table should be visible', async ({ taskPage, testData }) => {
+    await expect(taskPage.items).not.toHaveCount(0)
   })
 
-  test('Filter by status', async ({ tasksPage, testData }) => {
-    await tasksPage.filterByStatus(testData.status)
-    const targetColumn = tasksPage.getColumnByStatus(testData.status)
-    const tasksInTarget = targetColumn.locator(tasksPage.taskCards)
+  test('Task data', async ({ taskPage, testData }) => {
     await expect(createdTask).toBeVisible()
-    await expect(tasksInTarget).toHaveCount(1)
+    await taskPage.checkTask(title, testData.status, content)
     })
 
-  test('Filter by label', async ({ tasksPage, testData }) => {
-    await tasksPage.filterByLabel(testData.label)
-    await expect(createdTask).toBeVisible()
-    await expect(tasksPage.taskCards).toHaveCount(1)
-    })
-  
-  test('Empty filters', async ({ tasksPage, testData }) => {
-    await expect(tasksPage.taskCards.first()).toBeVisible()
-    const initialCount = await tasksPage.taskCards.count()
-    await tasksPage.filterByAssignee(testData.email)
-    await tasksPage.filterByStatus(testData.status)
-    await tasksPage.filterByLabel(testData.label)
-    await expect(tasksPage.taskCards).toHaveCount(1)
-    await tasksPage.resetFilter('Assignee')
-    await tasksPage.resetFilter('Status')
-    await tasksPage.resetFilter('Label')
-    await expect(tasksPage.taskCards).toHaveCount(initialCount)
-    }
-  )
+test.describe('Filter tests', () => {
 
-  test('Empty result', async ({ tasksPage, testData }) => {
-    await tasksPage.filterByAssignee(testData.email)
-    await tasksPage.filterByStatus('Published')
-    await expect(tasksPage.taskCards).toHaveCount(0)
+    test('Filter by assignee', async ({ taskPage, testData }) => {
+      await taskPage.applyFilter('Assignee', testData.email)
+      await expect(createdTask).toBeVisible()
+      await expect(taskPage.items).toHaveCount(1)
+    })
+
+    test('Filter by status', async ({ taskPage, testData }) => {
+      await taskPage.applyFilter('Status', testData.status)
+      const targetColumn = taskPage.getColumnByStatus(testData.status)
+      const tasksInTarget = targetColumn.locator(taskPage.items)
+      await expect(createdTask).toBeVisible()
+      await expect(tasksInTarget).toHaveCount(1)
+      })
+
+    test('Filter by label', async ({ taskPage, testData }) => {
+      await taskPage.applyFilter('Label', testData.label)
+      await expect(createdTask).toBeVisible()
+      await expect(taskPage.items).toHaveCount(1)
+      })
+    
+    test('Filters reset', async ({ taskPage, testData }) => {
+      await expect(taskPage.items.first()).toBeVisible()
+      const initialCount = await taskPage.items.count()
+      await taskPage.applyFilter('Assignee', testData.email)
+      await taskPage.applyFilter('Status', testData.status)
+      await taskPage.applyFilter('Label', testData.label)
+      await expect(taskPage.items).toHaveCount(1)
+      await taskPage.applyFilter('Assignee')
+      await taskPage.applyFilter('Status')
+      await taskPage.applyFilter('Label')
+      await expect(taskPage.items).toHaveCount(initialCount)
+      }
+    )
+
+    test('Empty result', async ({ taskPage, testData }) => {
+      await taskPage.applyFilter('Assignee', testData.email)
+      await taskPage.applyFilter('Status', 'Published')
+      await expect(taskPage.items).toHaveCount(0)
+    })
   })
 
-  test('Drag-and-Drop test', async ({ tasksPage }) => {
+  test('Drag-and-Drop test', async ({ taskPage }) => {
     const newStatus = 'To Review'
-    await tasksPage.dragTaskToStatus(title, newStatus)
-    const targetColumn = tasksPage.getColumnByStatus(newStatus)
+    await taskPage.dragTaskToStatus(title, newStatus)
+    const targetColumn = taskPage.getColumnByStatus(newStatus)
     await expect(targetColumn.locator(createdTask)).toBeVisible()
   })
 })

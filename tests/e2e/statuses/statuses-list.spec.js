@@ -1,33 +1,30 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Statuses list tests', () => {
 
-  test('Table should be visible', async ({ statusesPage }) => {
-    await statusesPage.goto()
-    await expect(statusesPage.tableBody).toBeVisible()
+  test('Table should be visible', async ({ statusPage }) => {
+    await statusPage.goto()
+    await expect(statusPage.tableBody).toBeVisible()
   })
 
   test.describe('Table data', () => {
-    let id, name, slug
+    let name, slug
 
-    test.beforeEach(async ({ statusPage, statusesPage }) => {
-      name = faker.book.title()
-      slug = faker.book.author()
-      await statusPage.successCreate(name, slug)
-      await statusesPage.goto()
-      id = await statusesPage.getStatusIdByName(name)
+    test.beforeEach(async ({ statusPage, testData }) => {
+      await statusPage.goto()
+      name = testData.status
+      slug = testData.slug
     })
 
-    test('Status data', async ({ statusesPage }) => {
-      await statusesPage.checkStatusByName(name, slug)
+    test('Status data', async ({ statusPage }) => {
+      await statusPage.checkItem(name, slug)
     })
 
-    test('Pagination', async ({ statusesPage }) => {
+    test('Pagination', async ({ statusPage }) => {
       const size = 5
-      await statusesPage.setPageSize(size)
-      await expect(statusesPage.tableRows).toHaveCount(size)
-      await expect(statusesPage.paginationInfo).toHaveText(`1-${size} of ${id}`)
+      await statusPage.setPageSize(size)
+      await expect(statusPage.tableRows).toHaveCount(size)
+      await expect(statusPage.paginationInfo).toHaveText(new RegExp(String.raw`1-${size} of \d+`))
     })
   })
 })

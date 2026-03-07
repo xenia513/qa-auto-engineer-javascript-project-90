@@ -6,8 +6,8 @@ test.describe('Authorization tests', () => {
   const username = 'username'
   const password = 'password'
 
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.goto()
+  test.beforeEach(async ({ page, loginPage }) => {
+    await page.goto(loginPage.url)
   })
 
   test('Form elements should be visible', async ({ loginPage }) => {
@@ -20,20 +20,9 @@ test.describe('Authorization tests', () => {
     })
 
   test.describe('Authorization failed', () => {
-    const errorMessage = 'Required'
-    const fields = [
-      { name: 'Username', key: 'usernameInput' },
-      { name: 'Password', key: 'passwordInput' }
-    ]
 
-    for (const field of fields) {
-      test(`Empty ${field.name}`, async ({ loginPage }) => {
-        const inputLocator = loginPage[field.key]
-        await inputLocator.fill('')
-        await loginPage.clickSignInButton()
-        await loginPage.checkFieldError(inputLocator, errorMessage)
-        await expect(loginPage.alert).toBeVisible()
-      })
-    }
+    test('Empty fields', async ({ loginPage }) => {
+      await loginPage.checkEmptyFields()
+    })
   })
 })

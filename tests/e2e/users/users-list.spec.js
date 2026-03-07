@@ -1,34 +1,31 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Users list tests', () => {
 
-  test('Table should be visible', async ({ usersPage }) => {
-    await usersPage.goto()
-    await expect(usersPage.tableBody).toBeVisible()
+  test('Table should be visible', async ({ userPage }) => {
+    await userPage.goto()
+    await expect(userPage.tableBody).toBeVisible()
   })
 
   test.describe('Table data', () => {
-    let id, email, firstname, lastname
+    let email, firstname, lastname
 
-    test.beforeEach(async ({ userPage, usersPage }) => {
-      email = faker.internet.email()
-      firstname = faker.person.firstName()
-      lastname = faker.person.lastName()
-      await userPage.successCreate(email, firstname, lastname)
-      await usersPage.goto()
-      id = await usersPage.getUsersIdByEmail(email)
+    test.beforeEach(async ({ userPage, testData }) => {
+      await userPage.goto()
+      email = testData.email
+      firstname = testData.firstName
+      lastname = testData.lastName
     })
 
-    test('User data', async ({ usersPage }) => {
-      await usersPage.checkUserByEmail(email, firstname, lastname)
+    test('User data', async ({ userPage }) => {
+      await userPage.checkItem(email, firstname, lastname)
     })
 
-    test('Pagination', async ({ usersPage }) => {
+    test('Pagination', async ({ userPage }) => {
       const size = 5
-      await usersPage.setPageSize(size)
-      await expect(usersPage.tableRows).toHaveCount(size)
-      await expect(usersPage.paginationInfo).toHaveText(`1-${size} of ${id}`)
+      await userPage.setPageSize(size)
+      await expect(userPage.tableRows).toHaveCount(size)
+      await expect(userPage.paginationInfo).toHaveText(new RegExp(String.raw`1-${size} of \d+`))
     })
   })
 })

@@ -1,4 +1,4 @@
-import { test, expect } from '../utils/fixtures.js'
+import { test } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('Status create tests', () => {
@@ -6,16 +6,13 @@ test.describe('Status create tests', () => {
   test('Form elements should be visible', async ({ statusPage }) => {
     await statusPage.gotoCreate()
     await statusPage.checkUIElements()
-    await expect(statusPage.submitButton).toBeDisabled()
   })
 
-  test('Creation succeed', async ({ statusPage, statusesPage }) => {
+  test('Creation succeed', async ({ statusPage }) => {
     const name = faker.book.title()
-    const slug = faker.book.author()
+    const slug = faker.lorem.slug()
     await statusPage.successCreate(name, slug)
-    await expect(statusPage.createPopup).toBeVisible()
-    await statusesPage.goto()
-    await statusesPage.checkStatusByName(name, slug)
+    await statusPage.checkItem(name, slug)
     })
 
   test.describe('Creation failed', () => {

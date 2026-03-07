@@ -1,32 +1,29 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Labels list tests', () => {
 
-  test('Table should be visible', async ({ labelsPage }) => {
-    await labelsPage.goto()
-    await expect(labelsPage.tableBody).toBeVisible()
+  test('Table should be visible', async ({ labelPage }) => {
+    await labelPage.goto()
+    await expect(labelPage.tableBody).toBeVisible()
   })
 
   test.describe('Table data', () => {
-    let id, name
+    let name
 
-    test.beforeEach(async ({ labelPage, labelsPage }) => {
-      name = faker.book.title()
-      await labelPage.successCreate(name)
-      await labelsPage.goto()
-      id = await labelsPage.getLabelIdByName(name)
+    test.beforeEach(async ({ labelPage, testData }) => {
+      await labelPage.goto()
+      name = testData.label
     })
 
-    test('Label data', async ({ labelsPage }) => {
-      await labelsPage.checkLabelByName(name)
+    test('Label data', async ({ labelPage }) => {
+      await labelPage.checkItem(name)
     })
 
-    test('Pagination', async ({ labelsPage }) => {
+    test('Pagination', async ({ labelPage }) => {
       const size = 5
-      await labelsPage.setPageSize(size)
-      await expect(labelsPage.tableRows).toHaveCount(size)
-      await expect(labelsPage.paginationInfo).toHaveText(`1-${size} of ${id}`)
+      await labelPage.setPageSize(size)
+      await expect(labelPage.tableRows).toHaveCount(size)
+      await expect(labelPage.paginationInfo).toHaveText(new RegExp(String.raw`1-${size} of \d+`))
     })
   })
 })

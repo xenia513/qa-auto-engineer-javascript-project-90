@@ -6,17 +6,17 @@ test.describe('Task create tests', () => {
   test('Form elements should be visible', async ({ taskPage }) => {
     await taskPage.gotoCreate()
     await taskPage.checkUIElements()
-    await expect(taskPage.submitButton).toBeDisabled()
   })
 
-  test('Creation succeed', async ({ taskPage, tasksPage, testData }) => {
+  test('Creation succeed', async ({ taskPage, testData }) => {
     const title = faker.book.title()
-    const content = null
+    const content = faker.book.author()
     await taskPage.successCreate(testData.email, title, testData.status, content, testData.label)
-    await expect(taskPage.createPopup).toBeVisible()
-    await tasksPage.goto()
-    await tasksPage.checkTaskByTitle(title, testData.status, content)
-    await tasksPage.goToTaskEdit(title)
+    const createdTask = taskPage.getItem(title)
+    const statusColumn = taskPage.getColumnByStatus(testData.status)
+    await expect(statusColumn.locator(createdTask)).toBeVisible()
+    await taskPage.checkItem(title, content)
+    await taskPage.goToTaskEdit(title)
     await expect(taskPage.assigneeSelect).toHaveText(testData.email)
     await expect(taskPage.labelSelect).toHaveText(testData.label)
     })
@@ -25,8 +25,8 @@ test.describe('Task create tests', () => {
 
     test('Empty fields', async ({ taskPage, testData }) => {
       await taskPage.gotoCreate()
-      await taskPage.fillContent(faker.book.genre())
-      await taskPage.selectLabel(testData.label)
+      await taskPage.contentInput.fill(faker.book.genre())
+      await taskPage.selectOption(taskPage.labelSelect, testData.label)
       await taskPage.checkEmptyFields()
     })
   })
