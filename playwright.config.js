@@ -1,5 +1,7 @@
 // @ts-check
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
+import path from 'path'
+const authFile = path.join(process.cwd(), 'playwright/.auth/user.json')
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -36,7 +38,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.auth/user.json',
+        storageState: authFile,
       },
       dependencies: ['setup'],
     },
