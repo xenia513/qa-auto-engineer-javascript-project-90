@@ -1,16 +1,45 @@
-# React + Vite
+# 🎭 Playwright E2E Testing Framework
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a automated testing framework built for a **React + Vite** web application.
 
-Currently, two official plugins are available:
+## 🏗 Framework Architecture
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The project uses advanced **Playwright** patterns to keep tests fast and easy to maintain:
 
-## React Compiler
+*   **Base Page Object Model (POM):** Common logic like navigation, table handling, selects, and error validation is moved to a single `BaseMVCPage.js`.
+*   **Shared Auth:** Login is performed once in `auth.setup.js`. The session state is saved and reused in all tests to save time.
+*   **Smart Fixtures:** A custom `testData` fixture automatically generates unique data (Users, Labels, Tasks) before each test.
+*   **Dynamic Locators:** Reliable ways to find elements using IDs from attributes or searching table rows by text.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Tech Stack
 
-## Expanding the ESLint configuration
+*   **Playwright** — core test engine.
+*   **Faker.js** — generating unique test data.
+*   **GitHub Actions** — CI/CD pipeline for automatic test runs.
+*   **JavaScript (ES6+)** — modern coding standards.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 How to Run
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/xenia513/qa-auto-engineer-javascript-project-90
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    npx playwright install --with-deps
+    ```
+
+3.  **Run tests:**
+    *   `npx playwright test` — Run all 59 tests.
+    *   `npx playwright test --ui` — Open interactive UI mode (best for debugging).
+    *   `npx playwright show-report` — View the HTML test report.
+
+## 🧪 Test Coverage (59 Scenarios)
+
+*   **Authorization:** Login, empty field validation, and error handling.
+*   **CRUD Operations:** Create, Edit, and Delete (single and mass delete) for Users, Labels, Statuses and Tasks.
+*   **Kanban Board:** Complex **Drag-and-Drop** logic for moving tasks between columns.
+*   **Filters:** Testing filters by assignee, status, and labels.
+*   **Pagination:** Switching pages and changing the number of items per page.
