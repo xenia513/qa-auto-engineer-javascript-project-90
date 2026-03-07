@@ -2,8 +2,10 @@ import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Labels list tests', () => {
 
-  test('Table should be visible', async ({ labelPage }) => {
+  test('Table should be visible', async ({ labelPage, page }) => {
     await labelPage.goto()
+    await expect(page).not.toHaveURL(/.*login/)
+    await expect(labelPage.page.locator('text=Labels').first()).toBeVisible()
     await expect(labelPage.tableBody).toBeVisible()
   })
 
