@@ -10,7 +10,9 @@ test.describe('Tasks list tests', () => {
     createdTask = taskPage.getItem(title)
   })
 
-  test('Table should be visible', async ({ taskPage, testData }) => {
+  test('Table should be visible', async ({ taskPage, page }) => {
+    await expect(page).not.toHaveURL(/.*login/)
+    await expect(page.getByText('Tasks').first()).toBeVisible({ timeout: 10000 })
     await expect(taskPage.items).not.toHaveCount(0)
   })
 

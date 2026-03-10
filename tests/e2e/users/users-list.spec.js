@@ -2,8 +2,10 @@ import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Users list tests', () => {
 
-  test('Table should be visible', async ({ userPage }) => {
+  test('Table should be visible', async ({ userPage, page }) => {
     await userPage.goto()
+    await expect(page).not.toHaveURL(/.*login/)
+    await expect(page.getByText('Users').first()).toBeVisible({ timeout: 10000 })
     await expect(userPage.tableBody).toBeVisible()
   })
 
