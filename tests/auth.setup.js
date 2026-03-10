@@ -8,14 +8,13 @@ setup('authenticate', async ({ page }) => {
     await page.context().storageState({ path: authFile })
     return;
   }
-  await page.getByLabel('Username').fill('username')
-  await page.getByLabel('Password').fill('password')
+  await page.getByLabel('Username').fill('admin@email.com')
+  await page.getByLabel('Password').fill('admin')
   await page.getByRole('button', { name: /Sign in/i }).click()
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 20000 })
   await page.waitForFunction(() => localStorage.length > 0)
   await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(2000)
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
   await page.context().storageState({ path: authFile })
 })
