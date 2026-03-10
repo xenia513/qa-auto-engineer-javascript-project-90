@@ -12,6 +12,10 @@ setup('authenticate', async ({ page }) => {
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 50000 })
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
+  await page.waitForFunction(() => {
+    return localStorage.length > 0 && Object.keys(localStorage).some(key => key.includes('auth') || key.includes('token') || key.includes('permissions'))
+  }, { timeout: 10000 })
   await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(500)
   await page.context().storageState({ path: authFile })
 })
