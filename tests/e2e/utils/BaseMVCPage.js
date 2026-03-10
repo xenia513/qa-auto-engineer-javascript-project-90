@@ -25,12 +25,16 @@ export default class BaseMVCPage {
     this.itemLocator = 'tr'
   }
 
-  async checkAuth() {
+  async checkAuth(expectedUrl = `${this.url}`) {
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
       await this.page.locator('input[name="password"]').fill('password')
       await this.page.getByRole('button', { name: /Sign in/i }).click()
-      await this.page.waitForURL(new RegExp(this.url))
+      await this.page.waitForURL('**/#/')
+
+      if (this.page.url() !== expectedUrl) {
+        await this.page.goto(expectedUrl)
+      }
     }
   }
 
@@ -40,7 +44,9 @@ export default class BaseMVCPage {
   }
 
   async gotoCreate() {
-    await this.page.goto(`${this.url}/create`)
+    const createUrl = `${this.url}/create`
+    await this.page.goto(createUrl)
+    await this.checkAuth(createUrl)
     }
   
   async gotoItem(id) {
