@@ -6,7 +6,7 @@ test.describe('Tasks list tests', () => {
   test.beforeEach(async ({ taskPage, testData }) => {
     await taskPage.goto()
     title = testData.title
-    content = testData.title
+    content = testData.content
     createdTask = taskPage.getItem(title)
   })
 
