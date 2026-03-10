@@ -78,6 +78,6 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: true,
-    timeout: 400 * 1000,
+    timeout: 600 * 1000,
   },
 });

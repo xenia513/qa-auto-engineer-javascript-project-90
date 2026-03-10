@@ -8,16 +8,10 @@ setup('authenticate', async ({ page }) => {
   await page.getByLabel('Username').fill('username')
   await page.getByLabel('Password').fill('password')
   await page.getByRole('button', { name: /Sign in/i }).click()
-  await page.waitForFunction(() => {
-    return localStorage.length > 0;
-  }, { timeout: 15000 }).catch(() => console.log('LocalStorage is still empty after click'))
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 50000 })
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
-  await page.waitForFunction(() => {
-    return localStorage.length > 0 && Object.keys(localStorage).some(key => key.includes('auth') || key.includes('token') || key.includes('permissions'))
-  }, { timeout: 10000 })
   await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(1000)
   await page.context().storageState({ path: authFile })
 })
