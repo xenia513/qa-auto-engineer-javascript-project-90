@@ -13,6 +13,13 @@ export const test = base.extend({
 
   loggedPage: async ({ page }, use) => {
     await page.goto('/')
+    if (page.url().includes('login')) {
+      await page.locator('input[name="username"]').fill('username')
+      await page.locator('input[name="password"]').fill('password')
+      await page.getByRole('button', { name: /Sign in/i }).click()
+
+      await page.waitForURL('**/#/')
+    }
     await use(page)
   },
 

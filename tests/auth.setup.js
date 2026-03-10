@@ -4,8 +4,8 @@ const authFile = './user.json'
 
 setup('authenticate', async ({ page }) => {
   await page.goto('http://localhost:5173/#/login')
-  await page.getByLabel('Username').fill('admin@email.com')
-  await page.getByLabel('Password').fill('admin')
+  await page.getByLabel('Username').fill('username')
+  await page.getByLabel('Password').fill('password')
   await page.getByRole('button', { name: /Sign in/i }).click()
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 20000 })
