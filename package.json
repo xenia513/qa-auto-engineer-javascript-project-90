@@ -4,7 +4,7 @@
   "type": "module",
   "description": "An automated testing framework built for a React + Vite web application",
     "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
