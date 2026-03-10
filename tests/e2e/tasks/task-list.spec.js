@@ -11,7 +11,6 @@ test.describe('Tasks list tests', () => {
   })
 
   test('Table should be visible', async ({ taskPage, page }) => {
-    await expect(page).not.toHaveURL(/.*login/)
     await expect(page.getByText('Tasks').first()).toBeVisible({ timeout: 10000 })
     await expect(taskPage.items).not.toHaveCount(0)
   })

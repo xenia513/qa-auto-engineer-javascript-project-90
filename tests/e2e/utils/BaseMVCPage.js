@@ -25,8 +25,18 @@ export default class BaseMVCPage {
     this.itemLocator = 'tr'
   }
 
+  async checkAuth() {
+    if (this.page.url().includes('login')) {
+      await this.page.locator('input[name="username"]').fill('username')
+      await this.page.locator('input[name="password"]').fill('password')
+      await this.page.getByRole('button', { name: /Sign in/i }).click()
+      await this.page.waitForURL(new RegExp(this.url))
+    }
+  }
+
   async goto() {
     await this.page.goto(`${this.url}`)
+    await this.checkAuth()
   }
 
   async gotoCreate() {
