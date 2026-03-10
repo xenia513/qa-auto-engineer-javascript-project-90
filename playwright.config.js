@@ -6,6 +6,7 @@ const authFile = 'user.json'
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  timeout: 60000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -24,7 +25,6 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    storageState: authFile,
   },
 
   /* Configure projects for major browsers */
@@ -32,12 +32,14 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: 'auth.setup.js',
+      use: { storageState: undefined }
     },
 
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        storageState: authFile,
       },
       dependencies: ['setup'],
     },
