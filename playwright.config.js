@@ -30,7 +30,7 @@ export default defineConfig({
   projects: [
     {
       name: 'setup',
-      testMatch: '**/*.setup.js',
+      testMatch: 'auth.setup.js',
     },
 
     {
