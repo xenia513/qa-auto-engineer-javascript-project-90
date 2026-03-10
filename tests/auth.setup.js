@@ -8,7 +8,9 @@ setup('authenticate', async ({ page }) => {
   await page.getByLabel('Username').fill('username')
   await page.getByLabel('Password').fill('password')
   await page.getByRole('button', { name: /Sign in/i }).click()
-  await page.waitForTimeout(2000)
+  await page.waitForFunction(() => {
+    return Object.keys(localStorage).some(key => key.includes('ra::auth') || key.includes('token'))
+  }, { timeout: 15000 })
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 50000 })
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
