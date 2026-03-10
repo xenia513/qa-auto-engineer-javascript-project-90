@@ -26,13 +26,14 @@ export default class BaseMVCPage {
   }
 
   async checkAuth(expectedUrl = `${this.url}`) {
+    await this.page.waitForTimeout(500)
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
       await this.page.locator('input[name="password"]').fill('password')
       await this.page.getByRole('button', { name: /Sign in/i }).click()
       await this.page.waitForURL('**/#/')
 
-      if (this.page.url() !== expectedUrl) {
+      if (this.page.url().includes(expectedUrl)) {
         await this.page.goto(expectedUrl)
       }
     }
