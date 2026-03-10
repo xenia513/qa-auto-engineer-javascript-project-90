@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test'
-import path from 'node:path'
-const authFile = path.join(process.cwd(), 'user.json')
+const authFile = 'user.json'
 
 /**
  * @see https://playwright.dev/docs/test-configuration

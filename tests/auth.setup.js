@@ -1,14 +1,12 @@
 import { test as setup, expect } from '@playwright/test'
-import path from 'node:path'
 
-const authFile = path.join(process.cwd(), '/user.json')
+const authFile = 'user.json'
 
 setup('authenticate', async ({ page }) => {
   await page.goto('http://localhost:5173/#/login', { waitUntil: 'networkidle' })
 
   await page.getByLabel('Username').fill('username')
   await page.getByLabel('Password').fill('password')
-  
   await page.getByRole('button', { name: /Sign in/i }).click()
   await page.waitForTimeout(2000)
 
