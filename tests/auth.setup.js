@@ -12,6 +12,6 @@ setup('authenticate', async ({ page }) => {
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 50000 })
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
-  await page.waitForTimeout(2000)
+  await page.waitForLoadState('networkidle')
   await page.context().storageState({ path: authFile })
 })

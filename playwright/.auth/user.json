@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "RaStore.version",
+          "value": "1"
+        },
+        {
+          "name": "username",
+          "value": "username"
+        }
+      ]
+    }
+  ]
+}
