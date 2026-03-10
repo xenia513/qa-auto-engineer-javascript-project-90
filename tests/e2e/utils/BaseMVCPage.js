@@ -26,6 +26,9 @@ export default class BaseMVCPage {
   }
 
   async checkAuth(expectedUrl = `${this.url}`) {
+    if (expectedUrl.includes('login')) {
+      return
+    }
     await this.page.waitForTimeout(500)
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
