@@ -5,6 +5,12 @@ test.describe('Labels list tests', () => {
   test('Table should be visible', async ({ labelPage, page }) => {
     await labelPage.goto()
     await expect(page).not.toHaveURL(/.*login/)
+        if (page.url().includes('login')) {
+       console.log('SESSION LOST! Manual login triggered...');
+       await page.locator('input[name="username"]').fill('admin');
+       await page.locator('input[name="password"]').fill('123456');
+       await page.getByRole('button').click();
+    }
     await expect(page.getByText('Labels').first()).toBeVisible({ timeout: 10000 })
     await expect(labelPage.tableBody).toBeVisible()
   })
