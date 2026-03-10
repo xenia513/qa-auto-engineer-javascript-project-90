@@ -4,7 +4,7 @@ test.use({ storageState: { cookies: [], origins: [] } })
 
 test.describe('Authorization tests', () => {
   const username = 'username'
-  const password = 'password'
+  const password = 'username'
 
   test.beforeEach(async ({ page, loginPage }) => {
     await page.goto(loginPage.url)
