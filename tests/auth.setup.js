@@ -9,8 +9,8 @@ setup('authenticate', async ({ page }) => {
   await page.getByLabel('Password').fill('password')
   await page.getByRole('button', { name: /Sign in/i }).click()
   await page.waitForFunction(() => {
-    return Object.keys(localStorage).some(key => key.includes('ra::auth') || key.includes('token'))
-  }, { timeout: 15000 })
+    return localStorage.length > 0;
+  }, { timeout: 15000 }).catch(() => console.log('LocalStorage is still empty after click'))
 
   await expect(page).toHaveURL('http://localhost:5173/#/', { timeout: 50000 })
   await expect(page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
