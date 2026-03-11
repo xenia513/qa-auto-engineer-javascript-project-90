@@ -4,7 +4,8 @@ test.describe('Labels list tests', () => {
 
   test('Table should be visible', async ({ labelPage, page }) => {
     await labelPage.goto()
-    await expect(page.locator('h6').or(page.getByText('Labels').first())).toBeVisible({ timeout: 15000 })
+    await expect(page).toHaveURL(/.*labels/, { timeout: 10000 })
+    await expect(page.getByRole('heading', { name: 'Labels' })).toBeVisible({ timeout: 30000 })
     await expect(labelPage.tableBody).toBeVisible()
   })
 
