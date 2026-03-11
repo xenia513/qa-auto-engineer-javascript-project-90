@@ -24,6 +24,8 @@ test.describe('Task edit tests', () => {
     const statusColumn = taskPage.getColumnByStatus(testData.status)
     await expect(statusColumn.locator(editedTask)).toBeVisible()
     await taskPage.checkItem(title, content)
-
+    await taskPage.goToTaskEdit(title)
+    await expect(taskPage.assigneeSelect).toHaveText(testData.email)
+    await expect(taskPage.labelSelect).toHaveText(testData.label)
   })
 })

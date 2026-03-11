@@ -144,8 +144,10 @@ export default class BaseMVCPage {
     await expect(this.page).toHaveURL(this.url)
     await expect(this.deletePopup).toBeVisible()
     await expect(this.deletePopup).toBeHidden()
+    await this.page.goto('/#/')
+    await this.goto()
     const item = this.page.locator(`[data-rfd-draggable-id]`).filter({ hasText: name, exact: true })
-    await expect(item).not.toBeVisible()
+    await expect(item).toHaveCount(0)
     await this.page.goto(`${this.url}/${id}`)
     await expect(this.errorAlert).toBeVisible()
   }
@@ -156,6 +158,9 @@ export default class BaseMVCPage {
     await expect(this.page).toHaveURL(this.url)
     await expect(this.massDeletePopup).toBeVisible()
     await expect(this.massDeletePopup).toBeHidden()
+    await this.page.goto('/#/')
+    await this.goto()
+    await expect(this.tableRows).toHaveCount(0)
     const emptyMessage = this.page.getByText(this.emptyText)
     await expect(emptyMessage).toBeVisible()
   }
