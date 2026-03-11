@@ -37,7 +37,7 @@ export default class BaseMVCPage {
       await expect(this.page).toHaveURL(new RegExp(expectedUrl), { timeout: 15000 })
 
       if (!this.page.url().includes(expectedUrl)) {
-        await this.page.goto(expectedUrl)
+        await this.page.goto(expectedUrl, { waitUntil: 'networkidle' })
       }
     }
   }
