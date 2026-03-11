@@ -6,7 +6,7 @@ import StatusMVCPage from '../utils/StatusMVCPage.js'
 import LabelMVCPage from '../utils/LabelMVCPage.js'
 import TaskMVCPage from './TaskMVCPage.js'
 
-export const extendedTest = base.extend({
+export const test = base.extend({
   loginPage: async ({ page }, use) => {
     await use(new LoginMVCPage(page))
   },
@@ -55,7 +55,7 @@ export const extendedTest = base.extend({
     await statusPage.successCreate(data.status, data.slug)
 
     await taskPage.successCreate(data.email, data.title, data.status, data.content, data.label)
-    
+
     await use(data)
   }
 })
