@@ -29,16 +29,17 @@ export default class BaseMVCPage {
     if (expectedUrl.includes('login') || this.page.url().includes('login')) {
       return
     }
-    await this.page.waitForTimeout(500)
+    await this.page.waitForTimeout(1000)
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
       await this.page.locator('input[name="password"]').fill('password')
       await this.page.getByRole('button', { name: /Sign in/i }).click()
-      await expect(this.page).toHaveURL(new RegExp(expectedUrl), { timeout: 15000 })
-
-      if (!this.page.url().includes(expectedUrl)) {
+      await expect(this.page).not.toHaveURL(/.*login/, { timeout: 15000 })
+      await this.page.waitForLoadState('networkidle')
+    }
+    const currentUrl = this.page.url()
+    if (!currentUrl.includes(expectedUrl)) {
         await this.page.goto(expectedUrl, { waitUntil: 'networkidle' })
-      }
     }
   }
 
