@@ -29,6 +29,14 @@ export default class BaseMVCPage {
     if (expectedUrl.includes('login') || this.page.url().includes('login')) {
       return
     }
+    
+    await this.page.waitForTimeout(1000)
+    if (!this.page.url().includes('login')) {
+      if (!this.page.url().includes(expectedUrl)) {
+        await this.page.goto(expectedUrl)
+      }
+      return
+    }
     await this.page.waitForTimeout(1000)
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
