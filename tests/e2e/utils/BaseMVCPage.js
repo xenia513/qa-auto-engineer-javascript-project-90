@@ -25,34 +25,13 @@ export default class BaseMVCPage {
     this.itemLocator = 'tr'
   }
 
-  async checkAuth(expectedUrl = `${this.url}`) {
-    if (expectedUrl.includes('login') || this.page.url().includes('login')) {
-      return
-    }
-
-    await this.page.waitForTimeout(1000)
-    if (this.page.url().includes('login')) {
-      await this.page.locator('input[name="username"]').fill('username')
-      await this.page.locator('input[name="password"]').fill('password')
-      await this.page.getByRole('button', { name: /Sign in/i }).click()
-    }
-    await expect(this.page.getByLabel('Profile').or(this.page.getByText(/Logout/i))).toBeVisible({ timeout: 15000 })
-    await this.page.waitForLoadState('networkidle')
-    const currentUrl = this.page.url()
-    if (!currentUrl.includes(expectedUrl)) {
-        await this.page.goto(expectedUrl, { waitUntil: 'networkidle' })
-    }
-  }
-
   async goto() {
     await this.page.goto(`${this.url}`)
-    await this.checkAuth()
   }
 
   async gotoCreate() {
     const createUrl = `${this.url}/create`
     await this.page.goto(createUrl)
-    await this.checkAuth(createUrl)
     }
   
   async gotoItem(id) {
@@ -86,7 +65,7 @@ export default class BaseMVCPage {
   }
 
   getItem(name) {
-    return this.page.locator(this.itemLocator).filter({ hasText: name })
+    return this.page.locator(this.itemLocator).filter({ hasText: name, exact: true })
   }
 
   async getId(name) {

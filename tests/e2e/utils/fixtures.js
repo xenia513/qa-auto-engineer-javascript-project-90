@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test'
+import { test as base, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import LoginMVCPage from './LoginMVCPage.js'
 import UserMVCPage from './UserMVCPage.js'
@@ -6,13 +6,17 @@ import StatusMVCPage from '../utils/StatusMVCPage.js'
 import LabelMVCPage from '../utils/LabelMVCPage.js'
 import TaskMVCPage from './TaskMVCPage.js'
 
-export const test = base.extend({
+export const extendedTest = base.extend({
   loginPage: async ({ page }, use) => {
     await use(new LoginMVCPage(page))
   },
 
   loggedPage: async ({ page }, use) => {
-    await page.goto('/')
+    await page.goto('/#/login')
+    await page.getByLabel('Username').fill('username')
+    await page.getByLabel('Password').fill('password')
+    await page.getByRole('button', { name: /Sign in/i }).click()
+    await expect(page.getByLabel('Profile')).toBeVisible({ timeout: 15000 })
     await use(page)
   },
 

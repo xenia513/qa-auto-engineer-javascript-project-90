@@ -39,7 +39,7 @@ The project uses advanced **Playwright** patterns to keep tests fast and easy to
     *   `npx playwright test --ui` — Open interactive UI mode (best for debugging).
     *   `npx playwright show-report` — View the HTML test report.
 
-## 🧪 Test Coverage (58 Scenarios)
+## 🧪 Test Coverage (57 Scenarios)
 
 *   **Authorization:** Login, empty field validation, and error handling.
 *   **CRUD Operations:** Create, Edit, and Delete (single and mass delete) for Users, Labels, Statuses and Tasks.
