@@ -1,12 +1,11 @@
 import { test, expect } from '../utils/fixtures.js'
 
-test.use({ storageState: { cookies: [], origins: [] } })
-
 test.describe('Authorization tests', () => {
   const username = 'username'
   const password = '1234' // NOSONAR
 
-  test.beforeEach(async ({ page, loginPage }) => {
+  test.beforeEach(async ({ page, loginPage, context }) => {
+    await context.clearCookies()
     await page.goto(loginPage.url)
   })
 
