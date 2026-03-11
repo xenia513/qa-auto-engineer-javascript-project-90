@@ -29,23 +29,14 @@ export default class BaseMVCPage {
     if (expectedUrl.includes('login') || this.page.url().includes('login')) {
       return
     }
-    
-    await this.page.waitForTimeout(1000)
-    if (!this.page.url().includes('login')) {
-      if (!this.page.url().includes(expectedUrl)) {
-        await this.page.goto(expectedUrl)
-      }
-      return
-    }
+
     await this.page.waitForTimeout(1000)
     if (this.page.url().includes('login')) {
       await this.page.locator('input[name="username"]').fill('username')
       await this.page.locator('input[name="password"]').fill('password')
-      await Promise.all([
-        this.page.waitForURL('**/#/'), 
-        this.page.getByRole('button', { name: /Sign in/i }).click(),
-      ])
+      await this.page.getByRole('button', { name: /Sign in/i }).click()
     }
+    await this.page.waitForURL('**/#/')
     const currentUrl = this.page.url()
     if (!currentUrl.includes(expectedUrl)) {
         await this.page.goto(expectedUrl, { waitUntil: 'networkidle' })
