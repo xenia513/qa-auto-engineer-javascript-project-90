@@ -34,7 +34,7 @@ export default class BaseMVCPage {
       await this.page.locator('input[name="username"]').fill('username')
       await this.page.locator('input[name="password"]').fill('password')
       await this.page.getByRole('button', { name: /Sign in/i }).click()
-      await expect(this.page.locator('h6')).toHaveText('Welcome to the administration', { timeout: 15000 })
+      await expect(this.page).toHaveURL(new RegExp(expectedUrl), { timeout: 15000 })
 
       if (!this.page.url().includes(expectedUrl)) {
         await this.page.goto(expectedUrl)
