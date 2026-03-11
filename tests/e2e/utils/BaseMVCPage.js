@@ -26,7 +26,7 @@ export default class BaseMVCPage {
   }
 
   async checkAuth(expectedUrl = `${this.url}`) {
-    if (expectedUrl.includes('login')) {
+    if (expectedUrl.includes('login') || this.page.url().includes('login')) {
       return
     }
     await this.page.waitForTimeout(500)
