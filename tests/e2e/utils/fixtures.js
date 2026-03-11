@@ -44,7 +44,7 @@ export const test = base.extend({
       label: faker.color.human(),
       status: faker.book.title(),
       slug: faker.lorem.slug(),
-      title: faker.book.title(),
+      title: faker.book.title().length > 3 ? faker.book.title() : faker.lorem.words(3),
       content: faker.book.author()
     }
 

@@ -1,4 +1,4 @@
-import { test } from '../utils/fixtures.js'
+import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Delete status tests', () => {
   let id, name, countBefore, countAfter
@@ -7,24 +7,25 @@ test.describe('Delete status tests', () => {
     await statusPage.goto()
     name = testData.status
     id = await statusPage.getId(name)
-    countBefore = await this.tableRows.count()
+    countBefore = await statusPage.items.count()
   })
 
   test('Delete from status page', async ({ statusPage }) => {
     await statusPage.gotoItem(id)
     await statusPage.deleteItem(name, id)
-    countAfter = await this.tableRows.count()
-    expect(countAfter).toBe(countBefore - 1)
+    countAfter = await statusPage.items.count()
+    await expect(countAfter).toBe(countBefore - 1)
   })
 
   test('Delete from statuses list', async ({ statusPage }) => {
     await statusPage.selectItem(name)
     await statusPage.deleteItem(name, id)
-    countAfter = await this.tableRows.count()
-    expect(countAfter).toBe(countBefore - 1)
+    countAfter = await statusPage.items.count()
+    await expect(countAfter).toBe(countBefore - 1)
   })
 
   test('Delete all statuses from statuses list', async ({ statusPage }) => {
+    await statusPage.setPageSize(50)
     await statusPage.deleteAll()
   })
 })

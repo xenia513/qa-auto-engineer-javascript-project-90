@@ -155,7 +155,7 @@ export default class BaseMVCPage {
   async deleteAll() {
     await this.selectAll()
     await this.deleteButton.click()
-    await expect(this.page).toHaveURL(this.url)
+    await expect(this.page).toHaveURL(new RegExp(`${this.url}`))
     await expect(this.massDeletePopup).toBeVisible()
     await expect(this.massDeletePopup).toBeHidden()
     await this.page.goto('/#/')
