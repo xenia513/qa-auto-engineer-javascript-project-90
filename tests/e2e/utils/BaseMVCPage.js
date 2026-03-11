@@ -36,7 +36,8 @@ export default class BaseMVCPage {
       await this.page.locator('input[name="password"]').fill('password')
       await this.page.getByRole('button', { name: /Sign in/i }).click()
     }
-    await this.page.waitForURL('**/#/')
+    await expect(this.page.getByLabel('Profile').or(this.page.getByText(/Logout/i))).toBeVisible({ timeout: 15000 })
+    await this.page.waitForLoadState('networkidle')
     const currentUrl = this.page.url()
     if (!currentUrl.includes(expectedUrl)) {
         await this.page.goto(expectedUrl, { waitUntil: 'networkidle' })
