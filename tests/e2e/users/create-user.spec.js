@@ -19,10 +19,7 @@ test.describe('User create tests', () => {
   test.describe('Creation failed', () => {
     test('Invalid email', async ({ userPage }) => {
       await userPage.gotoCreate()
-      const errorMessage = 'Incorrect email format'
-      await userPage.emailInput.fill('Incorrect email')
-      await userPage.clickSubmitButton()
-      await userPage.checkFieldError(userPage.emailInput, errorMessage)
+      await userPage.checkInvalidEmail()
     })
 
     test('Empty fields', async ({ userPage }) => {

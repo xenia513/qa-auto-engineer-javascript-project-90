@@ -13,7 +13,7 @@ test.describe('Label edit tests', () => {
     await labelPage.checkUIElements()
   })
 
-  test('Update succeed', async ({ page, labelPage }) => {
+  test('Update succeed', async ({ labelPage }) => {
     const name = faker.color.human()
     await labelPage.successEdit(name)
     await labelPage.expectUpdateSuccess()

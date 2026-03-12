@@ -22,10 +22,7 @@ test.describe('Labels list tests', () => {
     })
 
     test('Pagination', async ({ labelPage }) => {
-      const size = 5
-      await labelPage.setPageSize(size)
-      await expect(labelPage.tableRows).toHaveCount(size)
-      await expect(labelPage.paginationInfo).toHaveText(new RegExp(String.raw`1-${size} of \d+`))
+      await labelPage.checkPagination()
     })
   })
 })

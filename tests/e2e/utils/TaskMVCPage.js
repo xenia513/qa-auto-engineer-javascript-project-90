@@ -26,6 +26,14 @@ export default class TaskMVCPage extends BaseMVCPage {
     this.labelFilter = this.page.getByLabel('Label')
   }
 
+  get filters() {
+    return {
+      'Assignee': this.assigneeFilter,
+      'Status': this.statusFilter,
+      'Label': this.labelFilter,
+    }
+  }
+
   async checkUIElements() {
     await super.checkUIElements([
       this.assigneeSelect,
@@ -53,15 +61,6 @@ export default class TaskMVCPage extends BaseMVCPage {
       { name: 'Status', key: 'statusField' }
     ]
     await super.validateEmptyFields(fields)
-  }
-
-  async applyFilter(type, value) {
-    const filters = {
-      'Assignee': this.assigneeFilter,
-      'Status': this.statusFilter,
-      'Label': this.labelFilter
-    }
-    await this.filterBy(filters[type], value)
   }
 
   async goToTaskEdit(title) {

@@ -18,7 +18,6 @@ test.describe('Label delete tests', () => {
   })
 
   test('Delete from labels list', async ({ labelPage }) => {
-    
     await labelPage.selectItem(name)
     await labelPage.deleteItem(name, id)
     countAfter = await labelPage.items.count()

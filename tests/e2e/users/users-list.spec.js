@@ -23,10 +23,7 @@ test.describe('Users list tests', () => {
     })
 
     test('Pagination', async ({ userPage }) => {
-      const size = 5
-      await userPage.setPageSize(size)
-      await expect(userPage.tableRows).toHaveCount(size)
-      await expect(userPage.paginationInfo).toHaveText(new RegExp(String.raw`1-${size} of \d+`))
+      await userPage.checkPagination()
     })
   })
 })

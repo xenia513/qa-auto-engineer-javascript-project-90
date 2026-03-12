@@ -1,4 +1,4 @@
-import { test, expect } from '../utils/fixtures.js'
+import { test } from '../utils/fixtures.js'
 import { faker } from '@faker-js/faker'
 
 test.describe('User edit tests', () => {
@@ -13,7 +13,7 @@ test.describe('User edit tests', () => {
     await userPage.checkUIElements()
   })
 
-  test('Update succeed', async ({ page, userPage }) => {
+  test('Update succeed', async ({ userPage }) => {
     const email = faker.internet.email()
     const firstname = faker.person.firstName()
     const lastname = faker.person.lastName()
@@ -24,11 +24,7 @@ test.describe('User edit tests', () => {
 
   test.describe('Update failed', () => {
     test('Invalid email', async ({ userPage }) => {
-      const errorMessage = 'Incorrect email format'
-      await userPage.emailInput.fill('Incorrect email')
-      await userPage.clickSubmitButton()
-      await userPage.checkFieldError(userPage.emailInput, errorMessage)
-      await expect(userPage.validationAlert).toBeVisible()
+      await userPage.checkInvalidEmail()
     })
 
     test('Empty fields', async ({ userPage }) => {
