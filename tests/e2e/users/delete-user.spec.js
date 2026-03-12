@@ -17,15 +17,16 @@ test.describe('User delete tests', () => {
     await expect(countAfter).toBe(countBefore - 1)
   })
 
-  test('Delete from users list', async ({ userPage }) => {
+  test('Undo deletion from users list', async ({ userPage }) => {
     await userPage.selectItem(email)
-    await userPage.deleteItem(email, id)
-    countAfter = await userPage.items.count()
-    await expect(countAfter).toBe(countBefore - 1)
+    await userPage.deleteButton.click({ force: true })
+    await userPage.undoButton.click()
+    await expect(userPage.deletePopup).toBeHidden()
+    await expect(userPage.items).toHaveCount(countBefore)
+    await expect(userPage.getItem(email)).toBeVisible()
   })
 
   test('Delete all users from users list', async ({ userPage }) => {
-    await userPage.setPageSize(50)
     await userPage.deleteAll()
   })
 })

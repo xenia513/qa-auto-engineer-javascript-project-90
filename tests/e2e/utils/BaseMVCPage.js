@@ -15,6 +15,7 @@ export default class BaseMVCPage {
     this.createButton = page.getByLabel('Create')
     this.submitButton = page.locator('button[type="submit"]').filter({ hasText: /save/i })
     this.deleteButton = page.getByRole('button', { name: 'Delete' })
+    this.undoButton = page.locator('.MuiSnackbarContent-action').getByRole('button')
 
     this.tableBody = page.locator('tbody')
     this.tableRows = page.locator('tbody tr')
@@ -33,12 +34,13 @@ export default class BaseMVCPage {
 
   async goto() {
     await this.page.goto(`${this.url}`)
-
+    await expect(this.page).toHaveURL(`${this.url}`)
   }
 
   async gotoCreate() {
     const createUrl = `${this.url}/create`
     await this.page.goto(createUrl)
+    await expect(this.page).toHaveURL(createUrl)
     }
   
   async gotoItem(id) {
@@ -161,14 +163,21 @@ export default class BaseMVCPage {
   }
 
   async deleteAll() {
-    await this.selectAll()
-    await this.deleteButton.click()
-    await expect(this.page).toHaveURL(new RegExp(`${this.url}`))
-    await expect(this.massDeletePopup).toBeVisible()
-    await expect(this.massDeletePopup).toBeHidden()
+    const { total } = await this.getPaginationData()
+    if (total > 0) {
+      while (await this.items.count() > 0) {
+        await this.selectAll()
+        await this.deleteButton.click()
+        await expect(this.page).toHaveURL(new RegExp(`${this.url}`))
+        await expect(this.massDeletePopup).toBeVisible()
+        await expect(this.massDeletePopup).toBeHidden()
+        await this.page.waitForLoadState('networkidle')
+      }
+    }
     await expect(this.items).toHaveCount(0)
     const emptyMessage = this.page.getByText(this.emptyText)
     await expect(emptyMessage).toBeVisible()
+    await expect(this.createButton).toBeVisible()
   }
 
   async applyFilter(type, value = 'Clear value') {
@@ -255,29 +264,29 @@ export default class BaseMVCPage {
 
     for (const size of sizes) {
       await this.setPageSize(size)
-      const { start, end, total } = await this.getPaginationData()
-      const firstPageEnd = Math.min(size, total)
-
-      await expect(this.paginationInfo).toContainText(`1-${firstPageEnd} of ${total}`)
+      const temp = await this.getPaginationData()
+      const firstPageEnd = Math.min(size, temp.total)
+      await expect(this.paginationInfo).toContainText(`1-${firstPageEnd} of ${temp.total}`)
+      const pageInfo = await this.getPaginationData()
       await expect(this.tableRows).toHaveCount(firstPageEnd)
-      expect(start).toBe(1)
-      expect(end).toBe(firstPageEnd)
+      expect(pageInfo.start).toBe(1)
+      expect(pageInfo.end).toBe(firstPageEnd)
 
-      if (total > size) {
+      if (pageInfo.total > size) {
         const firstRowItem = await this.tableRows.first().locator('td').nth(1).innerText()
         await expect(this.prevPageButton).toBeDisabled()
         await this.goToNextPage()
 
         const secondPageStart = size + 1
-        const secondPageEnd = Math.min(size * 2, total)
+        const secondPageEnd = Math.min(size * 2, pageInfo.total)
 
-        await expect(this.paginationInfo).toHaveText(`${secondPageStart}-${secondPageEnd} of ${total}`)
+        await expect(this.paginationInfo).toHaveText(`${secondPageStart}-${secondPageEnd} of ${pageInfo.total}`)
         await expect(this.tableRows).toHaveCount(secondPageEnd - size)
 
         const secondRowItem = await this.tableRows.first().innerText()
         expect(secondRowItem).not.toEqual(firstRowItem)
 
-        if (secondPageEnd == total) {
+        if (secondPageEnd == pageInfo.total) {
           await expect(this.nextPageButton).toBeDisabled()
         }
         await this.goToPrevPage()

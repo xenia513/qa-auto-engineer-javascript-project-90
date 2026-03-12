@@ -17,15 +17,16 @@ test.describe('Label delete tests', () => {
     await expect(countAfter).toBe(countBefore - 1)
   })
 
-  test('Delete from labels list', async ({ labelPage }) => {
+  test('Undo deletion from labels list', async ({ labelPage }) => {
     await labelPage.selectItem(name)
-    await labelPage.deleteItem(name, id)
-    countAfter = await labelPage.items.count()
-    await expect(countAfter).toBe(countBefore - 1)
+    await labelPage.deleteButton.click({ force: true })
+    await labelPage.undoButton.click()
+    await expect(labelPage.deletePopup).toBeHidden()
+    await expect(labelPage.items).toHaveCount(countBefore)
+    await expect(labelPage.getItem(name)).toBeVisible()
   })
 
   test('Delete all labels from labels list', async ({ labelPage }) => {
-    await labelPage.setPageSize(50)
     await labelPage.deleteAll()
   })
 })

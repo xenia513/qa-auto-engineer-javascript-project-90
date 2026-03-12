@@ -18,10 +18,12 @@ test.describe('Task delete tests', () => {
       await expect(countAfter).toBe(countBefore - 1)
   })
 
-    test('Delete from show page', async ({ taskPage }) => {
+    test('Undo deletion from show page', async ({ taskPage }) => {
       await taskPage.goToTaskShow(title)
-      await taskPage.deleteItem(title, id)
-      countAfter = await taskPage.items.count()
-      await expect(countAfter).toBe(countBefore - 1)
+      await taskPage.deleteButton.click({ force: true })
+      await taskPage.undoButton.click()
+      await expect(taskPage.deletePopup).toBeHidden()
+      await expect(taskPage.items).toHaveCount(countBefore)
+      await expect(taskPage.getItem(title)).toBeVisible()
   })
 })
