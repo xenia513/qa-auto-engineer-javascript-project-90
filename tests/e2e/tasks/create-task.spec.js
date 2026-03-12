@@ -11,7 +11,7 @@ test.describe('Task create tests', () => {
   test('Creation succeed', async ({ taskPage, testData }) => {
     const title = faker.book.title()
     const content = faker.book.author()
-    await taskPage.successCreate(testData.email, title, testData.status, content, testData.label)
+    await taskPage.successCreate(title, testData.email, testData.status, content, testData.label)
     const createdTask = taskPage.getItem(title)
     const statusColumn = taskPage.getColumnByStatus(testData.status)
     await expect(statusColumn.locator(createdTask)).toBeVisible()

@@ -18,7 +18,7 @@ test.describe('Task edit tests', () => {
     const assignee = testData.email
     const title = faker.book.title()
     const content = 'edited task'
-    await taskPage.successEdit(assignee, title, testData.status, content, testData.label)
+    await taskPage.successEdit(title, assignee, testData.status, content, testData.label)
     await taskPage.expectUpdateSuccess()
     const editedTask = taskPage.getItem(title)
     const statusColumn = taskPage.getColumnByStatus(testData.status)

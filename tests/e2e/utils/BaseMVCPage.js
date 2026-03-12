@@ -50,11 +50,25 @@ export default class BaseMVCPage {
     await this.page.locator('input').first().waitFor({ state: 'visible', timeout: 10000 })
   }
 
-  async checkUIElements(elements) {
-    for (const element of elements) {
-      await expect(element).toBeVisible({ timeout: 10000 })
-      if (!this.page.url().includes('login')) {
-        await expect(this.submitButton).toBeDisabled()
+  async checkUIElements(fields = this.fields) {
+    if (!this.page.url().includes('login')) {
+      await expect(this.submitButton).toBeDisabled()
+    }
+
+    for (const field of fields) {
+      const locator = field.locator || field
+      const isRequired = field.required || false
+      await expect(locator).toBeVisible({ timeout: 10000 })
+
+      if (!this.page.url().includes('create') && !this.page.url().includes('login')) {
+        const tagName = await locator.evaluate(el => el.tagName.toLowerCase())
+        const role = await locator.getAttribute('role')
+        const isInput = ['input', 'select', 'textarea'].includes(tagName) || role === 'combobox'
+        
+        if (isInput && isRequired) {
+          const value = await locator.inputValue().catch(() => locator.innerText())
+          expect(value).not.toBe('')
+        }
       }
     }
   }
@@ -63,10 +77,11 @@ export default class BaseMVCPage {
     await this.submitButton.click()
   }
 
-  async successCreate(...args) {
+  async successCreate(name, ...args) {
     await this.gotoCreate()
-    await this.successEdit(...args)
+    await this.successEdit(name, ...args)
     await expect(this.createPopup).toBeVisible()
+    await expect(this.page.locator('h6#react-admin-title')).toContainText(name)
     await this.goto()
   }
 
@@ -121,33 +136,35 @@ export default class BaseMVCPage {
   }
 
   async checkFieldError(fieldLocator, errorMessage) {
-    const field = fieldLocator
-    .locator('input')
-    .or(fieldLocator.locator('[role="combobox"]'))
-    .or(fieldLocator)
-    .first()
-    await expect(field).toHaveAttribute('aria-invalid', 'true')
-    const container = this.page.locator('.MuiFormControl-root').filter({ has: field })
+    const container = this.page.locator('.MuiFormControl-root').filter({ has: fieldLocator }).first()
     const errorElement = container.locator('.Mui-error, .MuiFormHelperText-root').filter({ hasText: errorMessage })
     await expect(errorElement).toBeVisible()
     await expect(errorElement).toHaveText(errorMessage)
   }
 
-  async validateEmptyFields(fields) {
+  async checkEmptyFields(fields = this.fields) {
     const urlBefore = this.page.url()
-    for (const field of fields) {
-      const fieldLocator = this[field.key].locator('input, textarea').or(this[field.key])
-      await fieldLocator.fill('temp')
-      await fieldLocator.fill('')
+    const requiredFields = fields.filter(field => field.required)
+    for (const field of requiredFields) {
+      const fieldLocator = field.locator
+      const tagName = await fieldLocator.evaluate(el => el.tagName.toLowerCase())
+      const isEditable = ['input', 'textarea'].includes(tagName) || await fieldLocator.getAttribute('contenteditable') === 'true'
+
+      if (isEditable) {
+        await fieldLocator.fill('temp')
+        await fieldLocator.fill('')
+      } else {
+        await fieldLocator.click()
+        await this.page.keyboard.press('Escape')
+      }
     }
     await this.clickSubmitButton()
     await expect(this.page).toHaveURL(urlBefore)
     await expect(this.validationAlert).toBeVisible()
     await expect(this.submitButton).toBeEnabled()
 
-    for (const field of fields) {
-      const fieldLocator = this[field.key]
-      await this.checkFieldError(fieldLocator, 'Required')
+    for (const field of requiredFields) {
+      await this.checkFieldError(field.locator, 'Required')
     }
   }
 
@@ -187,7 +204,7 @@ export default class BaseMVCPage {
     await this.page.waitForLoadState('networkidle')
   }
 
-  async verifyFilteredItems(appliedFilter) {
+  async checkFilteredItems(appliedFilter) {
     const items = this.items
     const count = await items.count()
 

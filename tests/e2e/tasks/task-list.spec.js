@@ -26,7 +26,7 @@ test.describe('Filter tests', () => {
       await taskPage.applyFilter('Assignee', testData.email)
       await expect(createdTask).toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
-      await taskPage.verifyFilteredItems(testData.email)
+      await taskPage.checkFilteredItems(testData.email)
     })
 
     test('Filter by status', async ({ taskPage, testData }) => {
@@ -42,7 +42,7 @@ test.describe('Filter tests', () => {
       await taskPage.applyFilter('Label', testData.label)
       await expect(createdTask).toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
-      await taskPage.verifyFilteredItems(testData.label)
+      await taskPage.checkFilteredItems(testData.label)
     })
     
     test('Comby filters and reset', async ({ taskPage, testData }) => {

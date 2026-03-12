@@ -11,22 +11,15 @@ export default class LabelMVCPage extends BaseMVCPage {
     this.emptyText = 'No Labels yet'
   }
   
-  async checkUIElements() {
-    await super.checkUIElements([
-      this.nameInput,
-      this.submitButton
-    ])
+  get fields() { 
+    return [
+      { locator: this.nameInput, required: true },
+      { locator: this.submitButton }
+    ]
   }
 
   async successEdit(name) {
     await this.nameInput.fill(name)
     await this.clickSubmitButton()
-  }
- 
-  async checkEmptyFields() {
-    const fields = [
-      { name: 'Name', key: 'nameInput' },
-    ]
-    await super.validateEmptyFields(fields)
   }
 }

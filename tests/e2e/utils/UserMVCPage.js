@@ -14,13 +14,13 @@ export default class UserMVCPage extends BaseMVCPage {
     this.emptyText = 'No Users yet'
   }
   
-  async checkUIElements() {
-    await super.checkUIElements([
-      this.emailInput,
-      this.firstNameInput,
-      this.lastNameInput,
-      this.submitButton
-    ])
+  get fields() { 
+    return [
+      { locator: this.emailInput, required: true },
+      { locator: this.firstNameInput, required: true },
+      { locator: this.lastNameInput, required: true },
+      { locator: this.submitButton }
+    ]
   }
 
   async successEdit(email, firstname, lastname) {
@@ -28,15 +28,6 @@ export default class UserMVCPage extends BaseMVCPage {
     await this.firstNameInput.fill(firstname)
     await this.lastNameInput.fill(lastname)
     await super.clickSubmitButton()
-  }
-
-  async checkEmptyFields() {
-    const fields = [
-      { name: 'Email', key: 'emailInput' },
-      { name: 'First Name', key: 'firstNameInput' },
-      { name: 'Last Name', key: 'lastNameInput' }
-    ]
-    await super.validateEmptyFields(fields)
   }
 
   async checkInvalidEmail() {

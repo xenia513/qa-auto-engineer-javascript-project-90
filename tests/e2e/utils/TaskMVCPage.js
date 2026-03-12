@@ -34,33 +34,24 @@ export default class TaskMVCPage extends BaseMVCPage {
     }
   }
 
-  async checkUIElements() {
-    await super.checkUIElements([
-      this.assigneeSelect,
-      this.titleInput,
-      this.contentInput,
-      this.statusSelect,
-      this.labelSelect,
-      this.submitButton
-    ])
+  get fields() { 
+    return [
+      {locator: this.assigneeSelect, required: true },
+      { locator: this.titleInput, required: true },
+      { locator: this.contentInput, required: false },
+      { locator: this.statusSelect, required: true },
+      { locator: this.labelSelect, required: false },
+      { locator: this.submitButton }
+    ]
   }
 
-  async successEdit(assignee, title, status, content = null, label = null) {
+  async successEdit(title, assignee, status, content = null, label = null) {
     await this.selectOption(this.assigneeSelect, assignee)
     await this.titleInput.fill(title)
     if (content) { await this.contentInput.fill(content)}
     await this.selectOption(this.statusSelect, status)
     await this.selectOption(this.labelSelect, label)
     await this.clickSubmitButton()
-  }
-
-  async checkEmptyFields() {
-    const fields = [
-      { name: 'Assignee', key: 'assigneeField' },
-      { name: 'Title', key: 'titleField' },
-      { name: 'Status', key: 'statusField' }
-    ]
-    await super.validateEmptyFields(fields)
   }
 
   async goToTaskEdit(title) {

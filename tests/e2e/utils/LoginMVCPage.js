@@ -12,25 +12,17 @@ export default class LoginMVCPage extends BaseMVCPage {
     this.submitButton = page.getByRole('button', { name: 'Sign in' })
   }
 
-  async checkUIElements() {
-    await super.checkUIElements([
-      this.usernameInput,
-      this.passwordInput,
-      this.submitButton
-    ])
+  get fields() { 
+    return [
+      { locator: this.usernameInput, required: true },
+      { locator: this.passwordInput, required: true },
+      { locator: this.submitButton }
+    ]
   }
 
   async successAuth(username, password) {
     await this.usernameInput.fill(username)
     await this.passwordInput.fill(password)
     await this.clickSubmitButton()
-  }
-
-  async checkEmptyFields() {
-    const fields = [
-      { name: 'Username', key: 'usernameInput' },
-      { name: 'Password', key: 'passwordInput' }
-    ]
-    await super.validateEmptyFields(fields)
   }
 }

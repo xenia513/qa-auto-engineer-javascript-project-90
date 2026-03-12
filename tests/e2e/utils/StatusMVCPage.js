@@ -12,25 +12,17 @@ export default class StatusMVCPage extends BaseMVCPage {
     this.emptyText = 'No Task statuses yet'
   }
 
-  async checkUIElements() {
-    await super.checkUIElements([
-      this.nameInput,
-      this.slugInput,
-      this.submitButton
-    ])
+  get fields() { 
+    return [
+      { locator: this.nameInput, required: true },
+      { locator: this.slugInput, required: true },
+      { locator: this.submitButton }
+    ]
   }
 
   async successEdit(name, slug) {
     await this.nameInput.fill(name)
     await this.slugInput.fill(slug)
     await super.clickSubmitButton()
-  }
-  
-  async checkEmptyFields() {
-    const fields = [
-      { name: 'Name', key: 'nameInput' },
-      { name: 'Slug', key: 'slugInput' }
-    ]
-    await super.validateEmptyFields(fields)
   }
 }

@@ -54,7 +54,7 @@ export const test = base.extend({
 
     await statusPage.successCreate(data.status, data.slug)
 
-    await taskPage.successCreate(data.email, data.title, data.status, data.content, data.label)
+    await taskPage.successCreate(data.title, data.email, data.status, data.content, data.label)
 
     await use(data)
   }
