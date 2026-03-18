@@ -10,7 +10,6 @@ This project is an automated testing framework built for a **React + Vite** web 
 The project uses advanced **Playwright** patterns to keep tests fast and easy to maintain:
 
 *   **Base Page Object Model (POM):** Common logic like navigation, table handling, selects, and error validation is moved to a single `BaseMVCPage.js`.
-*   **Shared Auth:** Login is performed once in `auth.setup.js`. The session state is saved and reused in all tests to save time.
 *   **Smart Fixtures:** A custom `testData` fixture automatically generates unique data (Users, Labels, Tasks) before each test.
 *   **Dynamic Locators:** Reliable ways to find elements using IDs from attributes or searching table rows by text.
 
@@ -31,6 +30,8 @@ The project uses advanced **Playwright** patterns to keep tests fast and easy to
 2.  **Install dependencies:**
     ```bash
     npm install
+    ```
+    ```bash
     npx playwright install --with-deps
     ```
 

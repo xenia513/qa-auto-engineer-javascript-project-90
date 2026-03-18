@@ -92,6 +92,5 @@ export default class TaskMVCPage extends BaseMVCPage {
       { steps: 10 }
     )
     await this.page.mouse.up()
-    await this.page.waitForLoadState('networkidle')
   }
 }

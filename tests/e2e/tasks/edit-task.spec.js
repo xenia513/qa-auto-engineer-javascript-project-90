@@ -1,11 +1,10 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Task edit tests', () => {
 
-  test.beforeEach(async ({ taskPage, testData }) => {
+  test.beforeEach(async ({ taskPage, testTask }) => {
     await taskPage.goto()
-    const id = await taskPage.getId(testData.title)
+    const id = await taskPage.getId(testTask.title)
     await taskPage.gotoItem(id)
 
     })
@@ -14,18 +13,20 @@ test.describe('Task edit tests', () => {
     await taskPage.checkUIElements()
   })
 
-  test('Update succeed', async ({ taskPage, testData }) => {
-    const assignee = testData.email
-    const title = faker.book.title()
+  test('Update succeed', async ({ taskPage, taskTestData, testUser, testStatus, testLabel }) => {
+    const title = `${taskTestData.title}-updated`
+    const assignee = testUser.email
+    const status = testStatus.status
+    const label = testLabel.label
     const content = 'edited task'
-    await taskPage.successEdit(title, assignee, testData.status, content, testData.label)
+    await taskPage.successEdit(title, assignee, status, content, label)
     await taskPage.expectUpdateSuccess()
     const editedTask = taskPage.getItem(title)
-    const statusColumn = taskPage.getColumnByStatus(testData.status)
+    const statusColumn = taskPage.getColumnByStatus(status)
     await expect(statusColumn.locator(editedTask)).toBeVisible()
     await taskPage.checkItem(title, content)
     await taskPage.goToTaskEdit(title)
-    await expect(taskPage.assigneeSelect).toHaveText(testData.email)
-    await expect(taskPage.labelSelect).toHaveText(testData.label)
+    await expect(taskPage.assigneeSelect).toHaveText(assignee)
+    await expect(taskPage.labelSelect).toHaveText(label)
   })
 })

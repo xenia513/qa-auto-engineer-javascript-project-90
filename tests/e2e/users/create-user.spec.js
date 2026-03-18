@@ -1,5 +1,4 @@
 import { test } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('User create tests', () => {
   
@@ -8,10 +7,10 @@ test.describe('User create tests', () => {
     await userPage.checkUIElements()
   })
 
-  test('Creation succeed', async ({ userPage }) => {
-    const email = faker.internet.email()
-    const firstname = faker.person.firstName()
-    const lastname = faker.person.lastName()
+  test('Creation succeed', async ({ userPage, userTestData }) => {
+    const email = userTestData.email
+    const firstname = userTestData.firstname
+    const lastname = userTestData.lastname
     await userPage.successCreate(email, firstname, lastname)
     await userPage.checkItem(email, firstname, lastname)
     })

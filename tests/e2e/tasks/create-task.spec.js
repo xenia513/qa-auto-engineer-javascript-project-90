@@ -1,5 +1,4 @@
 import { test, expect } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Task create tests', () => {
 
@@ -8,25 +7,28 @@ test.describe('Task create tests', () => {
     await taskPage.checkUIElements()
   })
 
-  test('Creation succeed', async ({ taskPage, testData }) => {
-    const title = faker.book.title()
-    const content = faker.book.author()
-    await taskPage.successCreate(title, testData.email, testData.status, content, testData.label)
+  test('Creation succeed', async ({ taskPage, taskTestData, testUser, testStatus, testLabel }) => {
+    const title = taskTestData.title
+    const assignee = testUser.email
+    const status = testStatus.status
+    const content = taskTestData.content
+    const label = testLabel.label
+    await taskPage.successCreate(title, assignee, status, content, label)
     const createdTask = taskPage.getItem(title)
-    const statusColumn = taskPage.getColumnByStatus(testData.status)
+    const statusColumn = taskPage.getColumnByStatus(testStatus.status)
     await expect(statusColumn.locator(createdTask)).toBeVisible()
     await taskPage.checkItem(title, content)
     await taskPage.goToTaskEdit(title)
-    await expect(taskPage.assigneeSelect).toHaveText(testData.email)
-    await expect(taskPage.labelSelect).toHaveText(testData.label)
+    await expect(taskPage.assigneeSelect).toHaveText(assignee)
+    await expect(taskPage.labelSelect).toHaveText(label)
     })
 
   test.describe('Creation failed', () => {
 
-    test('Empty fields', async ({ taskPage, testData }) => {
+    test('Empty fields', async ({ taskPage, taskTestData, testLabel }) => {
       await taskPage.gotoCreate()
-      await taskPage.contentInput.fill(faker.book.genre())
-      await taskPage.selectOption(taskPage.labelSelect, testData.label)
+      await taskPage.contentInput.fill(taskTestData.content)
+      await taskPage.selectOption(taskPage.labelSelect, testLabel.label)
       await taskPage.checkEmptyFields()
     })
   })

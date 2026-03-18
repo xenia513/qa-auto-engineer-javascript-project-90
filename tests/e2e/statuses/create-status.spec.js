@@ -1,5 +1,4 @@
 import { test } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Status create tests', () => {
 
@@ -8,11 +7,11 @@ test.describe('Status create tests', () => {
     await statusPage.checkUIElements()
   })
 
-  test('Creation succeed', async ({ statusPage }) => {
-    const name = faker.book.title()
-    const slug = faker.lorem.slug()
-    await statusPage.successCreate(name, slug)
-    await statusPage.checkItem(name, slug)
+  test('Creation succeed', async ({ statusPage, statusTestData }) => {
+    const status = statusTestData.status
+    const slug = statusTestData.slug
+    await statusPage.successCreate(status, slug)
+    await statusPage.checkItem(status, slug)
     })
 
   test.describe('Creation failed', () => {

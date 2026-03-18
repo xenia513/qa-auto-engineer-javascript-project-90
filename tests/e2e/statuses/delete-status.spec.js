@@ -3,9 +3,9 @@ import { test, expect } from '../utils/fixtures.js'
 test.describe('Delete status tests', () => {
   let id, name, countBefore, countAfter
 
-  test.beforeEach(async ({ statusPage, testData }) => {
+  test.beforeEach(async ({ statusPage, testStatus }) => {
     await statusPage.goto()
-    name = testData.status
+    name = testStatus.status
     id = await statusPage.getId(name)
     countBefore = await statusPage.items.count()
   })

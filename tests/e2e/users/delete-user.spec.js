@@ -3,9 +3,9 @@ import { test, expect } from '../utils/fixtures.js'
 test.describe('User delete tests', () => {
     let id, email, countBefore, countAfter
     
-  test.beforeEach(async ({ userPage, testData }) => {
+  test.beforeEach(async ({ userPage, testUser }) => {
     await userPage.goto()
-    email = testData.email
+    email = testUser.email
     id = await userPage.getId(email)
     countBefore = await userPage.items.count()
   })

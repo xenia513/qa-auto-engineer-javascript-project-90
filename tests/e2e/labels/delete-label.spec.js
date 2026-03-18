@@ -3,9 +3,9 @@ import { test, expect } from '../utils/fixtures.js'
 test.describe('Label delete tests', () => {
   let id, name, countBefore, countAfter
 
-  test.beforeEach(async ({ labelPage, testData }) => {
+  test.beforeEach(async ({ labelPage, testLabel }) => {
     await labelPage.goto()
-    name = testData.label
+    name = testLabel.label
     id = await labelPage.getId(name)
     countBefore = await labelPage.items.count()
   })

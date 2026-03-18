@@ -1,5 +1,4 @@
 import { test } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Label create tests', () => {
 
@@ -8,10 +7,10 @@ test.describe('Label create tests', () => {
     await labelPage.checkUIElements()
   })
 
-  test('Creation succeed', async ({ labelPage }) => {
-    const name = faker.color.human()
-    await labelPage.successCreate(name)
-    await labelPage.checkItem(name)
+  test('Creation succeed', async ({ labelPage, labelTestData }) => {
+    const label = labelTestData.label
+    await labelPage.successCreate(label)
+    await labelPage.checkItem(label)
     })
 
   test.describe('Creation failed', () => {

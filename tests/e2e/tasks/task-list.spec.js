@@ -3,10 +3,10 @@ import { test, expect } from '../utils/fixtures.js'
 test.describe('Tasks list tests', () => {
   let title, createdTask, content
 
-  test.beforeEach(async ({ taskPage, testData }) => {
+  test.beforeEach(async ({ taskPage, testTask }) => {
     await taskPage.goto()
-    title = testData.title
-    content = testData.content
+    title = testTask.title
+    content = testTask.content
     createdTask = taskPage.getItem(title)
   })
 
@@ -15,49 +15,49 @@ test.describe('Tasks list tests', () => {
     await expect(taskPage.items).not.toHaveCount(0)
   })
 
-  test('Task data', async ({ taskPage, testData }) => {
+  test('Task data', async ({ taskPage, testStatus }) => {
     await expect(createdTask).toBeVisible()
-    await taskPage.checkTask(title, testData.status, content)
+    await taskPage.checkTask(title, testStatus.status, content)
     })
 
 test.describe('Filter tests', () => {
 
-    test('Filter by assignee', async ({ taskPage, testData }) => {
-      await taskPage.applyFilter('Assignee', testData.email)
+    test('Filter by assignee', async ({ taskPage, testUser }) => {
+      await taskPage.applyFilter('Assignee', testUser.email)
       await expect(createdTask).toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
-      await taskPage.checkFilteredItems(testData.email)
+      await taskPage.checkFilteredItems(testUser.email)
     })
 
-    test('Filter by status', async ({ taskPage, testData }) => {
-      await taskPage.applyFilter('Status', testData.status)
-      const targetColumn = taskPage.getColumnByStatus(testData.status)
+    test('Filter by status', async ({ taskPage, testStatus }) => {
+      await taskPage.applyFilter('Status', testStatus.status)
+      const targetColumn = taskPage.getColumnByStatus(testStatus.status)
       const tasksInTarget = targetColumn.locator(taskPage.items)
       await expect(createdTask).toBeVisible()
       await expect(tasksInTarget).toHaveCount(1)
       await expect(taskPage.items).toHaveCount(1)
     })
 
-    test('Filter by label', async ({ taskPage, testData }) => {
-      await taskPage.applyFilter('Label', testData.label)
+    test('Filter by label', async ({ taskPage, testLabel }) => {
+      await taskPage.applyFilter('Label', testLabel.label)
       await expect(createdTask).toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
-      await taskPage.checkFilteredItems(testData.label)
+      await taskPage.checkFilteredItems(testLabel.label)
     })
     
-    test('Comby filters and reset', async ({ taskPage, testData }) => {
+    test('Comby filters and reset', async ({ taskPage, testUser, testStatus, testLabel }) => {
       await expect(taskPage.items.first()).toBeVisible()
       const initialCount = await taskPage.items.count()
-      await taskPage.applyFilter('Assignee', testData.email)
-      await taskPage.applyFilter('Status', testData.status)
-      await taskPage.applyFilter('Label', testData.label)
+      await taskPage.applyFilter('Assignee', testUser.email)
+      await taskPage.applyFilter('Status', testStatus.status)
+      await taskPage.applyFilter('Label', testLabel.label)
       await expect(taskPage.items).toHaveCount(1)
       await taskPage.resetAllFilters()
       await expect(taskPage.items).toHaveCount(initialCount)
     })
 
-    test('Empty result', async ({ taskPage, testData }) => {
-      await taskPage.applyFilter('Assignee', testData.email)
+    test('Empty result', async ({ taskPage, testUser }) => {
+      await taskPage.applyFilter('Assignee', testUser.email)
       await taskPage.applyFilter('Status', 'Published')
       await expect(taskPage.items).toHaveCount(0)
     })

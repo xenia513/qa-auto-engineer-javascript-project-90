@@ -20,6 +20,10 @@ export default class LoginMVCPage extends BaseMVCPage {
     ]
   }
 
+  get submitDisabled() {
+    return false
+}
+
   async successAuth(username, password) {
     await this.usernameInput.fill(username)
     await this.passwordInput.fill(password)

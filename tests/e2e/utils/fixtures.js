@@ -2,8 +2,8 @@ import { test as base, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import LoginMVCPage from './LoginMVCPage.js'
 import UserMVCPage from './UserMVCPage.js'
-import StatusMVCPage from '../utils/StatusMVCPage.js'
-import LabelMVCPage from '../utils/LabelMVCPage.js'
+import StatusMVCPage from './StatusMVCPage.js'
+import LabelMVCPage from './LabelMVCPage.js'
 import TaskMVCPage from './TaskMVCPage.js'
 
 export const test = base.extend({
@@ -36,28 +36,53 @@ export const test = base.extend({
     await use(new TaskMVCPage(loggedPage))
   },
 
-  testData: async ({ userPage, labelPage, statusPage, taskPage }, use) => {
-    const data = {
+  userTestData: async ({}, use) => {
+    await use({
       email: faker.internet.email(),
       firstname: faker.person.firstName(),
-      lastname: faker.person.lastName(),
-      label: faker.color.human(),
+      lastname: faker.person.lastName()
+    })
+  },
+
+  testUser: async ({ userPage, userTestData }, use) => {
+    await userPage.successCreate(userTestData.email, userTestData.firstname, userTestData.lastname)
+    await use(userTestData)
+},
+
+  labelTestData: async ({}, use) => {
+    await use({
+      label: faker.color.human()
+    })
+  },
+
+  testLabel: async ({ labelPage, labelTestData }, use) => {
+    await labelPage.successCreate(labelTestData.label)
+    await use(labelTestData)
+},
+
+  statusTestData: async ({}, use) => {
+    await use({
       status: faker.book.title(),
-      slug: faker.lorem.slug(),
+      slug: faker.lorem.slug()
+    })
+  },
+
+  testStatus: async ({ statusPage, statusTestData }, use) => {
+    await statusPage.successCreate(statusTestData.status, statusTestData.slug)
+    await use(statusTestData)
+  },
+
+  taskTestData: async ({}, use) => {
+    await use({
       title: faker.book.title().length > 3 ? faker.book.title() : faker.lorem.words(3),
       content: faker.book.author()
-    }
+    })
+  },
 
-    await userPage.successCreate(data.email, data.firstname, data.lastname)
-
-    await labelPage.successCreate(data.label)
-
-    await statusPage.successCreate(data.status, data.slug)
-
-    await taskPage.successCreate(data.title, data.email, data.status, data.content, data.label)
-
-    await use(data)
-  }
+  testTask: async ({ taskPage, taskTestData, testUser, testStatus, testLabel }, use) => {
+    await taskPage.successCreate(taskTestData.title, testUser.email, testStatus.status, taskTestData.content, testLabel.label)
+    await use(taskTestData)
+  },
 })
 
 export { expect } from '@playwright/test'

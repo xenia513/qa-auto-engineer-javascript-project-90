@@ -3,8 +3,8 @@ import { test, expect } from '../utils/fixtures.js'
 test.describe('Task delete tests', () => {
   let id, title, countBefore, countAfter
 
-  test.beforeEach(async ({ taskPage, testData }) => {
-    title = testData.title
+  test.beforeEach(async ({ taskPage, testTask }) => {
+    title = testTask.title
     await taskPage.goto()
     await expect(taskPage.getItem(title)).toBeVisible()
     id = await taskPage.getId(title)

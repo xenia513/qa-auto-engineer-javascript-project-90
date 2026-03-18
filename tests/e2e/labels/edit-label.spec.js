@@ -1,11 +1,10 @@
 import { test } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Label edit tests', () => {
 
-  test.beforeEach(async ({ labelPage, testData }) => {
+  test.beforeEach(async ({ labelPage, testLabel }) => {
     await labelPage.goto()
-    const id = await labelPage.getId(testData.label)
+    const id = await labelPage.getId(testLabel.label)
     await labelPage.gotoItem(id)
     })
   
@@ -13,11 +12,11 @@ test.describe('Label edit tests', () => {
     await labelPage.checkUIElements()
   })
 
-  test('Update succeed', async ({ labelPage }) => {
-    const name = faker.color.human()
-    await labelPage.successEdit(name)
+  test('Update succeed', async ({ labelPage, labelTestData }) => {
+    const label = `${labelTestData.label}-updated`
+    await labelPage.successEdit(label)
     await labelPage.expectUpdateSuccess()
-    await labelPage.checkItem(name)
+    await labelPage.checkItem(label)
     })
 
   test.describe('Update failed', () => {

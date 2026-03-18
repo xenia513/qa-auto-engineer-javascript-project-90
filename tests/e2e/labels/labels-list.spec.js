@@ -12,9 +12,9 @@ test.describe('Labels list tests', () => {
   test.describe('Table data', () => {
     let name
 
-    test.beforeEach(async ({ labelPage, testData }) => {
+    test.beforeEach(async ({ labelPage, testLabel }) => {
       await labelPage.goto()
-      name = testData.label
+      name = testLabel.label
     })
 
     test('Label data', async ({ labelPage }) => {

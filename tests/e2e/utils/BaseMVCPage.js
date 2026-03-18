@@ -50,8 +50,12 @@ export default class BaseMVCPage {
     await this.page.locator('input').first().waitFor({ state: 'visible', timeout: 10000 })
   }
 
+  get submitDisabled() {
+    return true
+}
+
   async checkUIElements(fields = this.fields) {
-    if (!this.page.url().includes('login')) {
+    if (this.submitDisabled) {
       await expect(this.submitButton).toBeDisabled()
     }
 
@@ -173,7 +177,7 @@ export default class BaseMVCPage {
     await expect(this.page).toHaveURL(this.url)
     await expect(this.deletePopup).toBeVisible()
     await expect(this.deletePopup).toBeHidden()
-    const item = this.page.locator(`[data-rfd-draggable-id]`).filter({ hasText: name, exact: true })
+    const item = this.getItem(name)
     await expect(item).toHaveCount(0)
     await this.page.goto(`${this.url}/${id}`)
     await expect(this.errorAlert).toBeVisible()
@@ -188,7 +192,6 @@ export default class BaseMVCPage {
         await expect(this.page).toHaveURL(new RegExp(`${this.url}`))
         await expect(this.massDeletePopup).toBeVisible()
         await expect(this.massDeletePopup).toBeHidden()
-        await this.page.waitForLoadState('networkidle')
       }
     }
     await expect(this.items).toHaveCount(0)
@@ -201,7 +204,6 @@ export default class BaseMVCPage {
     const filterLocator = this.filters[type]
     await filterLocator.click()
     await this.page.getByRole('option', { name: value, exact: true }).click()
-    await this.page.waitForLoadState('networkidle')
   }
 
   async checkFilteredItems(appliedFilter) {
@@ -213,7 +215,6 @@ export default class BaseMVCPage {
       await this.gotoItem(id)
       await expect(this.page.locator('body')).toContainText(appliedFilter)
       await this.goto()
-      await this.page.waitForLoadState('networkidle')
     }
   }
 
@@ -221,12 +222,6 @@ export default class BaseMVCPage {
     for (const type of Object.keys(this.filters)) {
       await this.applyFilter(type)
     }
-  }
-
-  async filterBy(filterLocator, value = 'Clear value') {
-    await filterLocator.click()
-    await this.page.getByRole('option', { name: value, exact: true }).click()
-    await this.page.waitForLoadState('networkidle')
   }
 
   async selectOption(selectLocator, optionName) {
@@ -253,12 +248,10 @@ export default class BaseMVCPage {
 
   async goToNextPage() {
     await this.nextPageButton.click()
-    await this.page.waitForLoadState('networkidle')
   }
 
   async goToPrevPage() {
     await this.prevPageButton.click()
-    await this.page.waitForLoadState('networkidle')
   }
 
   async getPageSizes() {
@@ -273,7 +266,6 @@ export default class BaseMVCPage {
   async setPageSize(size) {
     await this.pageSizeSelector.click()
     await this.page.getByRole('option', { name: size.toString(), exact: true }).click()
-    await this.page.waitForLoadState('networkidle')
   }
 
   async checkPagination() {
@@ -303,7 +295,7 @@ export default class BaseMVCPage {
         const secondRowItem = await this.tableRows.first().innerText()
         expect(secondRowItem).not.toEqual(firstRowItem)
 
-        if (secondPageEnd == pageInfo.total) {
+        if (secondPageEnd === pageInfo.total) {
           await expect(this.nextPageButton).toBeDisabled()
         }
         await this.goToPrevPage()

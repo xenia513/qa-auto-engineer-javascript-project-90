@@ -1,11 +1,10 @@
 import { test } from '../utils/fixtures.js'
-import { faker } from '@faker-js/faker'
 
 test.describe('Status edit tests', () => {
 
-  test.beforeEach(async ({ statusPage, testData }) => {
+  test.beforeEach(async ({ statusPage, testStatus }) => {
     await statusPage.goto()
-    const id = await statusPage.getId(testData.status)
+    const id = await statusPage.getId(testStatus.status)
     await statusPage.gotoItem(id)
     })
   
@@ -13,12 +12,12 @@ test.describe('Status edit tests', () => {
     await statusPage.checkUIElements()
   })
 
-  test('Update succeed', async ({ statusPage }) => {
-    const name = faker.book.title()
-    const slug = faker.book.author()
-    await statusPage.successEdit(name, slug)
+  test('Update succeed', async ({ statusPage, statusTestData }) => {
+    const status = `${statusTestData.status}-updated`
+    const slug = `${statusTestData.slug}-updated`
+    await statusPage.successEdit(status, slug)
     await statusPage.expectUpdateSuccess()
-    await statusPage.checkItem(name, slug)
+    await statusPage.checkItem(status, slug)
     })
 
   test.describe('Update failed', () => {

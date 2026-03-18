@@ -3,9 +3,9 @@ import { faker } from '@faker-js/faker'
 
 test.describe('User edit tests', () => {
 
-  test.beforeEach(async ({ userPage, testData }) => {
+  test.beforeEach(async ({ userPage, testUser }) => {
     await userPage.goto()
-    const id = await userPage.getId(testData.email)
+    const id = await userPage.getId(testUser.email)
     await userPage.gotoItem(id)
     })
   

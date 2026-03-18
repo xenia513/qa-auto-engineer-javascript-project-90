@@ -11,11 +11,11 @@ test.describe('Users list tests', () => {
   test.describe('Table data', () => {
     let email, firstname, lastname
 
-    test.beforeEach(async ({ userPage, testData }) => {
+    test.beforeEach(async ({ userPage, testUser }) => {
       await userPage.goto()
-      email = testData.email
-      firstname = testData.firstName
-      lastname = testData.lastName
+      email = testUser.email
+      firstname = testUser.firstName
+      lastname = testUser.lastName
     })
 
     test('User data', async ({ userPage }) => {

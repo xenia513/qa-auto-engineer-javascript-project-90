@@ -11,10 +11,10 @@ test.describe('Statuses list tests', () => {
   test.describe('Table data', () => {
     let name, slug
 
-    test.beforeEach(async ({ statusPage, testData }) => {
+    test.beforeEach(async ({ statusPage, testStatus }) => {
       await statusPage.goto()
-      name = testData.status
-      slug = testData.slug
+      name = testStatus.status
+      slug = testStatus.slug
     })
 
     test('Status data', async ({ statusPage }) => {
