@@ -95,7 +95,9 @@ export default class BaseMVCPage {
   }
 
   getItem(name) {
-    return this.page.locator(this.itemLocator).filter({ hasText: name, exact: true })
+    return this.page.locator(this.itemLocator).filter({ 
+      has: this.page.getByText(name, { exact: true })
+    })
   }
 
   async getId(name) {

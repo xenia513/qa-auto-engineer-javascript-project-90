@@ -1,12 +1,14 @@
 import { test, expect } from '../utils/fixtures.js'
 
 test.describe('User delete tests', () => {
-    let id, email, countBefore, countAfter
+    let id, email, item, countBefore, countAfter
     
   test.beforeEach(async ({ userPage, testUser }) => {
     await userPage.goto()
     email = testUser.email
     id = await userPage.getId(email)
+    item = userPage.getItem(email)
+    await expect(item).toBeVisible()
     countBefore = await userPage.items.count()
   })
 
@@ -23,7 +25,7 @@ test.describe('User delete tests', () => {
     await userPage.undoButton.click()
     await expect(userPage.deletePopup).toBeHidden()
     await expect(userPage.items).toHaveCount(countBefore)
-    await expect(userPage.getItem(email)).toBeVisible()
+    await expect(item).toBeVisible()
   })
 
   test('Delete all users from users list', async ({ userPage }) => {

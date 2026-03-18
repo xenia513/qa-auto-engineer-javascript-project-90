@@ -1,12 +1,14 @@
 import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Delete status tests', () => {
-  let id, name, countBefore, countAfter
+  let id, name, item, countBefore, countAfter
 
   test.beforeEach(async ({ statusPage, testStatus }) => {
     await statusPage.goto()
     name = testStatus.status
     id = await statusPage.getId(name)
+    item = statusPage.getItem(name)
+    await expect(item).toBeVisible()
     countBefore = await statusPage.items.count()
   })
 
@@ -23,7 +25,7 @@ test.describe('Delete status tests', () => {
     await statusPage.undoButton.click()
     await expect(statusPage.deletePopup).toBeHidden()
     await expect(statusPage.items).toHaveCount(countBefore)
-    await expect(statusPage.getItem(name)).toBeVisible()
+    await expect(item).toBeVisible()
   })
 
   test('Delete all statuses from statuses list', async ({ statusPage }) => {

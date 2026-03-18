@@ -1,12 +1,14 @@
 import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Label delete tests', () => {
-  let id, name, countBefore, countAfter
+  let id, name, item, countBefore, countAfter
 
   test.beforeEach(async ({ labelPage, testLabel }) => {
     await labelPage.goto()
     name = testLabel.label
     id = await labelPage.getId(name)
+    item = labelPage.getItem(name)
+    await expect(item).toBeVisible()
     countBefore = await labelPage.items.count()
   })
 
@@ -23,7 +25,7 @@ test.describe('Label delete tests', () => {
     await labelPage.undoButton.click()
     await expect(labelPage.deletePopup).toBeHidden()
     await expect(labelPage.items).toHaveCount(countBefore)
-    await expect(labelPage.getItem(name)).toBeVisible()
+    await expect(item).toBeVisible()
   })
 
   test('Delete all labels from labels list', async ({ labelPage }) => {

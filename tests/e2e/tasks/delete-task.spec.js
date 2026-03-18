@@ -1,12 +1,13 @@
 import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Task delete tests', () => {
-  let id, title, countBefore, countAfter
+  let id, title, item, countBefore, countAfter
 
   test.beforeEach(async ({ taskPage, testTask }) => {
     title = testTask.title
     await taskPage.goto()
-    await expect(taskPage.getItem(title)).toBeVisible()
+    item = taskPage.getItem(title)
+    await expect(item).toBeVisible()
     id = await taskPage.getId(title)
     countBefore = await taskPage.items.count()
     })
@@ -24,6 +25,6 @@ test.describe('Task delete tests', () => {
       await taskPage.undoButton.click()
       await expect(taskPage.deletePopup).toBeHidden()
       await expect(taskPage.items).toHaveCount(countBefore)
-      await expect(taskPage.getItem(title)).toBeVisible()
+      await expect(item).toBeVisible()
   })
 })
