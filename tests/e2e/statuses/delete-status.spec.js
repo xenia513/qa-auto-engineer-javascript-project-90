@@ -21,11 +21,8 @@ test.describe('Delete status tests', () => {
 
   test('Delete from statuses list and undo', async ({ statusPage }) => {
     await statusPage.selectItem(name)
-    await statusPage.deleteButton.click({ force: true })
-    await statusPage.undoButton.click()
-    await expect(statusPage.deletePopup).toBeHidden()
+    await statusPage.undoDeleteItem(name)
     await expect(statusPage.items).toHaveCount(countBefore)
-    await expect(item).toBeVisible()
   })
 
   test('Delete all statuses from statuses list', async ({ statusPage }) => {

@@ -175,14 +175,28 @@ export default class BaseMVCPage {
   }
 
   async deleteItem(name, id) {
+    const item = this.getItem(name)
+
     await this.deleteButton.click({ force: true })
     await expect(this.page).toHaveURL(this.url)
+    await expect(item).toBeHidden()
     await expect(this.deletePopup).toBeVisible()
     await expect(this.deletePopup).toBeHidden()
-    const item = this.getItem(name)
     await expect(item).toHaveCount(0)
     await this.page.goto(`${this.url}/${id}`)
     await expect(this.errorAlert).toBeVisible()
+  }
+
+  async undoDeleteItem(name,) {
+    const item = this.getItem(name)
+
+    await this.deleteButton.click({ force: true })
+    await expect(this.page).toHaveURL(this.url)
+    await expect(item).toBeHidden()
+    await expect(this.deletePopup).toBeVisible()
+    await this.undoButton.click()
+    await expect(this.deletePopup).toBeHidden()
+    await expect(item).toBeVisible()
   }
 
   async deleteAll() {

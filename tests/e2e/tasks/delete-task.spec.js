@@ -21,10 +21,7 @@ test.describe('Task delete tests', () => {
 
     test('Undo deletion from show page', async ({ taskPage }) => {
       await taskPage.goToTaskShow(title)
-      await taskPage.deleteButton.click({ force: true })
-      await taskPage.undoButton.click()
-      await expect(taskPage.deletePopup).toBeHidden()
+      await taskPage.undoDeleteItem(title)
       await expect(taskPage.items).toHaveCount(countBefore)
-      await expect(item).toBeVisible()
   })
 })

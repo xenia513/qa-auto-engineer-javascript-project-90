@@ -21,11 +21,9 @@ test.describe('Label delete tests', () => {
 
   test('Undo deletion from labels list', async ({ labelPage }) => {
     await labelPage.selectItem(name)
-    await labelPage.deleteButton.click({ force: true })
-    await labelPage.undoButton.click()
-    await expect(labelPage.deletePopup).toBeHidden()
+    await labelPage.undoDeleteItem(name)
     await expect(labelPage.items).toHaveCount(countBefore)
-    await expect(item).toBeVisible()
+
   })
 
   test('Delete all labels from labels list', async ({ labelPage }) => {

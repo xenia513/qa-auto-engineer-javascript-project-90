@@ -21,11 +21,8 @@ test.describe('User delete tests', () => {
 
   test('Undo deletion from users list', async ({ userPage }) => {
     await userPage.selectItem(email)
-    await userPage.deleteButton.click({ force: true })
-    await userPage.undoButton.click()
-    await expect(userPage.deletePopup).toBeHidden()
+    await userPage.undoDeleteItem(email)
     await expect(userPage.items).toHaveCount(countBefore)
-    await expect(item).toBeVisible()
   })
 
   test('Delete all users from users list', async ({ userPage }) => {
