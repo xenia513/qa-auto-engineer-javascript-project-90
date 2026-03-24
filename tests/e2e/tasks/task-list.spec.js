@@ -22,12 +22,14 @@ test.describe('Tasks list tests', () => {
   })
 
   test.describe('Filter tests', () => {
-    test.beforeEach(async ({ taskPage, userPage, statusPage, testUser, testStatus }) => {
+    test.beforeEach(async ({ taskPage, userPage, statusPage, labelPage }) => {
       const otherEmail = faker.internet.email()
       await userPage.successCreate(otherEmail, 'Other', 'User')
-      const otherStatusName = faker.word.noun()
-      await statusPage.successCreate(otherStatusName, faker.lorem.slug())
-      await taskPage.successCreate('WrongTask', otherEmail, otherStatusName)
+      const otherStatus = 'OtherStatus'
+      const otherLabel = 'OtherLabel'
+      await statusPage.successCreate(otherStatus, faker.lorem.slug())
+      await labelPage.successCreate(otherLabel)
+      await taskPage.successCreate('WrongTask', otherEmail, otherStatus, 'OtherContent', otherLabel)
       wrongTask = taskPage.getItem('WrongTask')
     })
 
