@@ -222,11 +222,11 @@ export default class BaseMVCPage {
     await this.page.getByRole('option', { name: value, exact: true }).click()
   }
 
-  async checkFilteredItems(appliedFilter) {
+  async checkFilteredItems(appliedFilter, expectedCount) {
     const items = this.items
-    const count = await items.count()
+    await expect(this.items).toHaveCount(expectedCount)
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < expectedCount; i++) {
       const id = await items.nth(i).getAttribute('data-rfd-draggable-id')
       await this.gotoItem(id)
       await expect(this.page.locator('body')).toContainText(appliedFilter)

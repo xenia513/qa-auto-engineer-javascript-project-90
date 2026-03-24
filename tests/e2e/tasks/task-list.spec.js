@@ -1,7 +1,8 @@
 import { test, expect } from '../utils/fixtures.js'
+import { faker } from '@faker-js/faker'
 
 test.describe('Tasks list tests', () => {
-  let title, createdTask, content
+  let title, createdTask, content, wrongTask
 
   test.beforeEach(async ({ taskPage, testTask }) => {
     await taskPage.goto()
@@ -18,15 +19,23 @@ test.describe('Tasks list tests', () => {
   test('Task data', async ({ taskPage, testStatus }) => {
     await expect(createdTask).toBeVisible()
     await taskPage.checkTask(title, testStatus.status, content)
-    })
+  })
 
-test.describe('Filter tests', () => {
+  test.describe('Filter tests', () => {
+    test.beforeEach(async ({ taskPage, userPage, statusPage, testUser, testStatus }) => {
+      const otherEmail = faker.internet.email()
+      await userPage.successCreate(otherEmail, 'Other', 'User')
+      const otherStatusName = faker.word.noun()
+      await statusPage.successCreate(otherStatusName, faker.lorem.slug())
+      await taskPage.successCreate('WrongTask', otherEmail, otherStatusName)
+      wrongTask = taskPage.getItem('WrongTask')
+    })
 
     test('Filter by assignee', async ({ taskPage, testUser }) => {
       await taskPage.applyFilter('Assignee', testUser.email)
       await expect(createdTask).toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
-      await taskPage.checkFilteredItems(testUser.email)
+      await taskPage.checkFilteredItems(testUser.email, 1)
     })
 
     test('Filter by status', async ({ taskPage, testStatus }) => {
@@ -34,6 +43,7 @@ test.describe('Filter tests', () => {
       const targetColumn = taskPage.getColumnByStatus(testStatus.status)
       const tasksInTarget = targetColumn.locator(taskPage.items)
       await expect(createdTask).toBeVisible()
+      await expect(wrongTask).not.toBeVisible()
       await expect(tasksInTarget).toHaveCount(1)
       await expect(taskPage.items).toHaveCount(1)
     })
@@ -41,8 +51,8 @@ test.describe('Filter tests', () => {
     test('Filter by label', async ({ taskPage, testLabel }) => {
       await taskPage.applyFilter('Label', testLabel.label)
       await expect(createdTask).toBeVisible()
-      await expect(taskPage.items).toHaveCount(1)
-      await taskPage.checkFilteredItems(testLabel.label)
+      await expect(wrongTask).not.toBeVisible()
+      await taskPage.checkFilteredItems(testLabel.label, 1)
     })
     
     test('Comby filters and reset', async ({ taskPage, testUser, testStatus, testLabel }) => {
@@ -51,6 +61,8 @@ test.describe('Filter tests', () => {
       await taskPage.applyFilter('Assignee', testUser.email)
       await taskPage.applyFilter('Status', testStatus.status)
       await taskPage.applyFilter('Label', testLabel.label)
+      await expect(createdTask).toBeVisible()
+      await expect(wrongTask).not.toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
       await taskPage.resetAllFilters()
       await expect(taskPage.items).toHaveCount(initialCount)
