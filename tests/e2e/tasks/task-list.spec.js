@@ -94,5 +94,7 @@ test.describe('Tasks list tests', () => {
     await expect(targetColumn.locator(tasksSelector)).toHaveCount(initialTargetCount + 1)
     await expect(targetColumn.locator(createdTask)).toBeVisible()
     await expect(page.locator('.task-card')).toHaveCount(totalCount)
+    await taskPage.goToTaskEdit(title)
+    await expect(taskPage.statusSelect).toContainText(newStatus)
   })
 })
