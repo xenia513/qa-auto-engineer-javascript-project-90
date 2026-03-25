@@ -78,10 +78,21 @@ test.describe('Tasks list tests', () => {
     })
   })
 
-  test('Drag-and-Drop test', async ({ taskPage }) => {
+  test('Drag-and-Drop test', async ({ page, taskPage, testStatus }) => {
+    const oldStatus = testStatus.status
     const newStatus = 'To Review'
-    await taskPage.dragTaskToStatus(title, newStatus)
+    const sourceColumn = taskPage.getColumnByStatus(oldStatus)
     const targetColumn = taskPage.getColumnByStatus(newStatus)
+    const tasksSelector = '[data-rfd-draggable-id]'
+    const initialSourceCount = await sourceColumn.locator(tasksSelector).count()
+    const initialTargetCount = await targetColumn.locator(tasksSelector).count()
+    const totalCount = await page.locator('.task-card').count()
+
+    await expect(sourceColumn.locator(createdTask)).toBeVisible()
+    await taskPage.dragTaskToStatus(title, newStatus)
+    await expect(sourceColumn.locator(tasksSelector)).toHaveCount(initialSourceCount - 1)
+    await expect(targetColumn.locator(tasksSelector)).toHaveCount(initialTargetCount + 1)
     await expect(targetColumn.locator(createdTask)).toBeVisible()
+    await expect(page.locator('.task-card')).toHaveCount(totalCount)
   })
 })

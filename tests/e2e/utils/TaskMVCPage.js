@@ -65,7 +65,7 @@ export default class TaskMVCPage extends BaseMVCPage {
   }
 
   getColumnByStatus(status) {
-    return this.page.locator('div').filter({ has: this.page.locator(`h6:has-text("${status}")`) }).last()
+    return this.page.locator('h6', { hasText: status }).locator('..')
   }
 
   async checkTask(title, status, content = null) {
