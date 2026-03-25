@@ -19,7 +19,7 @@ test.describe('Task edit tests', () => {
     const status = testStatus.status
     const label = testLabel.label
     const content = 'edited task'
-    await taskPage.successEdit(title, assignee, status, content, label)
+    await taskPage.successEdit(title, null, null, content, null)
     await taskPage.expectUpdateSuccess()
     const editedTask = taskPage.getItem(title)
     const statusColumn = taskPage.getColumnByStatus(status)

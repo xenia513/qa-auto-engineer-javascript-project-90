@@ -45,12 +45,12 @@ export default class TaskMVCPage extends BaseMVCPage {
     ]
   }
 
-  async successEdit(title, assignee, status, content = null, label = null) {
-    await this.selectOption(this.assigneeSelect, assignee)
+  async successEdit(title, assignee = null, status = null, content = null, label = null) {
+    if (assignee) { await this.selectOption(this.assigneeSelect, assignee)}
     await this.titleInput.fill(title)
     if (content) { await this.contentInput.fill(content)}
-    await this.selectOption(this.statusSelect, status)
-    await this.selectOption(this.labelSelect, label)
+    if (status) { await this.selectOption(this.statusSelect, status)}
+    if (label) { await this.selectOption(this.labelSelect, label)}
     await this.clickSubmitButton()
   }
 
