@@ -96,7 +96,7 @@ export default class BaseMVCPage {
 
   getItem(name) {
     return this.page.locator(this.itemLocator).filter({ 
-      has: this.page.getByText(name, { exact: true })
+      has: this.page.getByText(name)
     })
   }
 

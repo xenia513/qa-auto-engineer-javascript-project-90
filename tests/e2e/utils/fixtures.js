@@ -74,7 +74,7 @@ export const test = base.extend({
 
   taskTestData: async ({}, use) => {
     await use({
-      title: faker.book.title().length > 3 ? faker.book.title() : faker.lorem.words(3),
+      title: faker.book.title(),
       content: faker.book.author()
     })
   },
