@@ -23,6 +23,15 @@ test.describe('Users list tests', () => {
     })
 
     test('Pagination', async ({ userPage }) => {
+      for (let i = 0; i < 11; i++) {
+        await userPage.successCreate(
+          `user${i}@example.com`, 
+          `FirstName${i}`, 
+          `LastName${i}`
+        )
+      }
+
+      await userPage.goto()
       await userPage.checkPagination()
     })
   })

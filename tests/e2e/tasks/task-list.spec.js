@@ -36,6 +36,7 @@ test.describe('Tasks list tests', () => {
     test('Filter by assignee', async ({ taskPage, testUser }) => {
       await taskPage.applyFilter('Assignee', testUser.email)
       await expect(createdTask).toBeVisible()
+      await expect(wrongTask).not.toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
       await taskPage.checkFilteredItems(testUser.email, 1)
     })

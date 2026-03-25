@@ -22,6 +22,14 @@ test.describe('Statuses list tests', () => {
     })
 
     test('Pagination', async ({ statusPage }) => {
+      for (let i = 0; i < 11; i++) {
+        await statusPage.successCreate(
+          `status${i}`, 
+          `slug${i}`
+        )
+      }
+
+      await statusPage.goto()
       await statusPage.checkPagination()
     })
   })

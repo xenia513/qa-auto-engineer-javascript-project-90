@@ -22,6 +22,13 @@ test.describe('Labels list tests', () => {
     })
 
     test('Pagination', async ({ labelPage }) => {
+      for (let i = 0; i < 11; i++) {
+        await labelPage.successCreate(
+          `label${i}`
+        )
+      }
+
+      await labelPage.goto()
       await labelPage.checkPagination()
     })
   })
