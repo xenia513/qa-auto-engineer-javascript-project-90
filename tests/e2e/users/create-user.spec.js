@@ -1,4 +1,4 @@
-import { test } from '../utils/fixtures.js'
+import { test, expect } from '../utils/fixtures.js'
 
 test.describe('User create tests', () => {
   
@@ -8,11 +8,15 @@ test.describe('User create tests', () => {
   })
 
   test('Creation succeed', async ({ userPage, userTestData }) => {
+    await userPage.goto({ timeout: 10000 })
+    await expect(userPage.items.first()).toBeVisible()
+    const countBefore = await userPage.items.count()
     const email = userTestData.email
     const firstname = userTestData.firstname
     const lastname = userTestData.lastname
     await userPage.successCreate(email, firstname, lastname)
     await userPage.checkItem(email, firstname, lastname)
+    await expect(userPage.items).toHaveCount(countBefore + 1)
     })
 
   test.describe('Creation failed', () => {

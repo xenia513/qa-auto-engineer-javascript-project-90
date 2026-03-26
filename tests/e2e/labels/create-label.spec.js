@@ -1,4 +1,4 @@
-import { test } from '../utils/fixtures.js'
+import { test, expect } from '../utils/fixtures.js'
 
 test.describe('Label create tests', () => {
 
@@ -8,9 +8,13 @@ test.describe('Label create tests', () => {
   })
 
   test('Creation succeed', async ({ labelPage, labelTestData }) => {
+    await labelPage.goto({ timeout: 10000 })
+    await expect(labelPage.items.first()).toBeVisible()
+    const countBefore = await labelPage.items.count()
     const label = labelTestData.label
     await labelPage.successCreate(label)
     await labelPage.checkItem(label)
+    await expect(labelPage.items).toHaveCount(countBefore + 1)
     })
 
   test.describe('Creation failed', () => {

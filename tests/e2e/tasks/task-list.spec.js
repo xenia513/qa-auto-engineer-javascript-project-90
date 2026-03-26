@@ -60,7 +60,7 @@ test.describe('Tasks list tests', () => {
     
     test('Comby filters and reset', async ({ taskPage, testUser, testStatus, testLabel }) => {
       await expect(taskPage.items.first()).toBeVisible()
-      const initialCount = await taskPage.items.count()
+      const countBefore = await taskPage.items.count()
       await taskPage.applyFilter('Assignee', testUser.email)
       await taskPage.applyFilter('Status', testStatus.status)
       await taskPage.applyFilter('Label', testLabel.label)
@@ -68,7 +68,7 @@ test.describe('Tasks list tests', () => {
       await expect(wrongTask).not.toBeVisible()
       await expect(taskPage.items).toHaveCount(1)
       await taskPage.resetAllFilters()
-      await expect(taskPage.items).toHaveCount(initialCount)
+      await expect(taskPage.items).toHaveCount(countBefore)
     })
 
     test('Empty result', async ({ taskPage, testUser }) => {
@@ -84,14 +84,15 @@ test.describe('Tasks list tests', () => {
     const sourceColumn = taskPage.getColumnByStatus(oldStatus)
     const targetColumn = taskPage.getColumnByStatus(newStatus)
     const tasksSelector = '[data-rfd-draggable-id]'
-    const initialSourceCount = await sourceColumn.locator(tasksSelector).count()
-    const initialTargetCount = await targetColumn.locator(tasksSelector).count()
+    const sourceCountBefore = await sourceColumn.locator(tasksSelector).count()
+    const targetCountBefore = await targetColumn.locator(tasksSelector).count()
     const totalCount = await page.locator('.task-card').count()
 
     await expect(sourceColumn.locator(createdTask)).toBeVisible()
     await taskPage.dragTaskToStatus(title, newStatus)
-    await expect(sourceColumn.locator(tasksSelector)).toHaveCount(initialSourceCount - 1)
-    await expect(targetColumn.locator(tasksSelector)).toHaveCount(initialTargetCount + 1)
+    await expect(sourceColumn.locator(tasksSelector)).toHaveCount(sourceCountBefore - 1)
+    await expect(targetColumn.locator(tasksSelector)).toHaveCount(targetCountBefore + 1)
+    await expect(sourceColumn.locator(createdTask)).toBeHidden()
     await expect(targetColumn.locator(createdTask)).toBeVisible()
     await expect(page.locator('.task-card')).toHaveCount(totalCount)
     await taskPage.goToTaskEdit(title)

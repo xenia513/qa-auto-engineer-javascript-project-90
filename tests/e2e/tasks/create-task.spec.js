@@ -8,6 +8,9 @@ test.describe('Task create tests', () => {
   })
 
   test('Creation succeed', async ({ taskPage, taskTestData, testUser, testStatus, testLabel }) => {
+    await taskPage.goto({ timeout: 10000 })
+    await expect(taskPage.items.first()).toBeVisible()
+    const countBefore = await taskPage.items.count()
     const title = taskTestData.title
     const assignee = testUser.email
     const status = testStatus.status
@@ -18,6 +21,7 @@ test.describe('Task create tests', () => {
     const statusColumn = taskPage.getColumnByStatus(testStatus.status)
     await expect(statusColumn.locator(createdTask)).toBeVisible()
     await taskPage.checkItem(title, content)
+    await expect(taskPage.items).toHaveCount(countBefore + 1)
     await taskPage.goToTaskEdit(title)
     await expect(taskPage.assigneeSelect).toHaveText(assignee)
     await expect(taskPage.labelSelect).toHaveText(label)
